@@ -1,0 +1,1057 @@
+<!DOCTYPE html><!-- v20260401215233 -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Limn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── UNIFIED SUBHEADING SYSTEM ─────────────────────────────────── */
+:root {
+  --sub: #8a6a30;  /* dark gold for labels */
+  --sub-size: 0.68rem;
+  --sub-space: 0.18em;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#ffffff; font-family:'Lora',Georgia,'Times New Roman',serif; font-size:1.05rem; color:#2d4260; min-height:100vh; }
+header { padding:1.8rem 2.5rem 1.4rem; border-bottom:1px solid #e0d8c8; display:flex; align-items:baseline; gap:1.2rem; }
+.logo { font-size:1.7rem; letter-spacing:0.22em; font-weight:300; }
+.tagline { font-family:sans-serif; font-size:0.58rem; letter-spacing:0.28em; text-transform:uppercase; color:#b8975a; font-style:italic; }
+main { max-width:700px; margin:0 auto; padding:2.5rem 1.5rem 5rem; background:#ffffff; }
+.key-section { background:#ffffff; border:1px solid #e0d8c8; padding:1.2rem 1.5rem; margin-bottom:2rem; }
+.key-label { font-family:sans-serif; font-size:0.52rem; letter-spacing:0.25em; text-transform:uppercase; color:#9a8e7e; margin-bottom:0.5rem; display:block; }
+.key-row { display:flex; gap:0.6rem; }
+.key-input { flex:1; font-family:monospace; font-size:0.8rem; padding:0.6rem 0.8rem; border:1px solid #e0d8c8; background:#f5f0e8; color:#2d4260; outline:none; }
+.key-input:focus { border-color:#b8975a; }
+.key-btn { font-family:sans-serif; font-size:0.55rem; letter-spacing:0.2em; text-transform:uppercase; background:#1c1810; color:#faf7f0; border:none; padding:0.6rem 1rem; cursor:pointer; white-space:nowrap; }
+.key-status { font-family:sans-serif; font-size:0.55rem; letter-spacing:0.15em; color:#4a7a5a; margin-top:0.4rem; }
+.date-line { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:#9a8e7e; margin-bottom:0.6rem; }
+.prompt { font-size:0.97rem; font-style:normal; font-weight:400; color:#4a4035; margin-bottom:1.8rem; line-height:1.5; }
+textarea { width:100%; min-height:180px; background:#faf5ee; border:1px solid #e0d8c8; padding:1.3rem 1.6rem; font-family:'Lora',Georgia,'Times New Roman',serif; font-size:1.1rem; line-height:1.9; color:#2d4260; resize:vertical; outline:none; display:block; }
+textarea:focus { border-color:#b8975a; }
+.about-overlay {
+  display:none;
+  position:fixed;
+  top:0; left:0; width:100%; height:100%;
+  background:rgba(10,18,28,0.7);
+  z-index:9998;
+  align-items:center;
+  justify-content:center;
+}
+.about-overlay.open { display:flex; }
+.about-box {
+  background:#243850;
+  padding:3rem 3.5rem;
+  max-width:480px;
+  width:90%;
+  text-align:center;
+}
+.about-line1 {
+  font-family:'Lora',Georgia,serif;
+  font-size:1.05rem;
+  color:#f5efe0;
+  line-height:1.75;
+  margin-bottom:0.6rem;
+}
+.about-line2 {
+  font-family:'Lora',Georgia,serif;
+  font-size:1.05rem;
+  font-weight:500;
+  color:#c8782a;
+  line-height:1.75;
+  margin-bottom:2rem;
+}
+.about-close {
+  font-family:sans-serif;
+  font-size:0.58rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:#8aa0b8;
+  background:none;
+  border:none;
+  cursor:pointer;
+}
+.about-close:hover { color:#2d4260; }
+.header-title { cursor:pointer; }
+.header-title:hover { opacity:0.75; }
+.btn-reflect { margin-top:1rem; font-family:sans-serif; font-size:0.63rem; letter-spacing:0.25em; text-transform:uppercase; background:#1c1810; color:#faf7f0; border:none; padding:0.9rem 2.2rem; cursor:pointer; }
+.btn-reflect:hover { background:#8b3a2a; }
+.error { margin-top:0.8rem; color:#8b3a2a; font-style:italic; font-size:0.9rem; padding:0.7rem 1rem; border:1px solid rgba(139,58,42,0.2); background:rgba(139,58,42,0.04); }
+.examples-section { margin-top:2.5rem; padding-top:2rem; border-top:1px solid #e0d8c8; }
+.section-label { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:var(--sub); margin-bottom:1rem; font-weight:500; }
+.example-btn { display:block; width:100%; text-align:left; background:#ffffff; border:1px solid #e0d8c8; padding:0.85rem 1.2rem; cursor:pointer; font-family:'Lora',Georgia,'Times New Roman',serif; font-style:normal; font-size:0.95rem; color:#4a4035; line-height:1.55; margin-bottom:0.6rem; }
+.example-btn:hover { border-color:#b8975a; }
+#loading { display:none; text-align:center; padding:5rem 2rem; }
+.loading-text { font-style:italic; font-size:1rem; color:#c07838; opacity:0.75; margin-bottom:1.8rem; }
+.dots { color:#243850; letter-spacing:0.8em; font-size:1.2rem; opacity:0.7; }
+#response { display:none; }
+/* Opening — two lines, warm dark gold, inviting */
+.resonance-line1 { font-family:'Lora',Georgia,'Times New Roman',serif; font-size:0.97rem; font-style:normal; font-weight:400; line-height:1.5; color:#2d4260; margin-bottom:0.4rem; text-align:left; }
+.resonance-line2 { font-family:'Lora',Georgia,'Times New Roman',serif; font-size:0.97rem; font-style:normal; font-weight:500; line-height:1.5; color:#9a5c20; margin-bottom:1.8rem; text-align:left; }
+/* Concept block */
+.concept-block { background:#ffffff; border:1px solid #ddd3c0; margin-bottom:0; padding:1rem 1.5rem; }
+.concept-name { font-family:sans-serif; font-size:0.82rem; letter-spacing:0.22em; color:#8a6a30; margin-bottom:0.5rem; font-weight:700; text-transform:uppercase; }
+.concept-gloss { font-size:0.95rem; line-height:1.8; color:#8a6a30; font-style:normal; font-weight:600; }
+.phil-block { background:#faf5ee; border:1px solid #ddd3c0; padding:1.3rem 1.7rem; }
+.phil-block.mirror { border-top:none; }
+.tradition { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:var(--sub); margin-bottom:0.6rem; font-weight:500; }
+.tradition.mt { color:var(--sub); }
+.phil-text { font-size:0.95rem; line-height:1.85; color:#2d4260; margin-bottom:0.8rem; }
+.phil-quote { font-size:0.97rem; font-style:italic; color:#2d4260; border-left:2px solid #ddd3c0; padding-left:1rem; line-height:1.75; margin-bottom:0.8rem; }
+.bridge { background:#efd4a8; border:1px solid #ddd3c0; padding:1rem 1.7rem; }
+.bridge-label { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:var(--sub); margin-bottom:0.5rem; font-weight:500; }
+.bridge-text { font-size:0.95rem; line-height:1.8; color:#2d4260; font-style:normal; }
+.expansion { padding:1.2rem 1.4rem; margin-bottom:2rem; border-top:1px solid #e0d8c8; border-bottom:1px solid #e0d8c8; }
+.expansion-label { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:var(--sub); margin-bottom:0.6rem; font-weight:500; }
+.expansion-text { font-size:0.95rem; font-style:normal; color:#2d4260; line-height:1.85; }
+.divider { display:flex; align-items:center; gap:1rem; margin:1.6rem 0; }
+.divider-line { flex:1; height:1px; background:#243850; opacity:0.25; }
+.divider-star { color:#9a5c20 !important; }
+.art-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin-bottom:2.4rem; }
+.art-card { background:#faf7f0; border:1px solid #e0d8c8; box-shadow:0 3px 14px rgba(28,24,16,0.09); overflow:hidden; cursor:pointer; transition:box-shadow 0.2s; }
+.art-card:hover { box-shadow:0 6px 24px rgba(28,24,16,0.18); }
+.art-card img { width:100%; height:300px; object-fit:cover; object-position:center top; display:block; background:#f0ebe0; }
+.art-card img.orient-portrait { object-fit:contain; object-position:center; }
+.art-card img.orient-square { object-fit:contain; object-position:center; }
+.art-ph { height:300px; background:#ede7d9; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:1.2rem; text-align:center; }
+.art-ph-t { font-style:italic; font-size:0.95rem; color:#4a4035; margin-bottom:0.4rem; line-height:1.4; }
+.art-ph-s { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:var(--sub); }
+.art-meta { padding:1rem 1.2rem; border-top:1px solid #e0d8c8; }
+.art-title { font-style:italic; font-size:1rem; color:#2d4260; margin-bottom:0.3rem; }
+.art-artist { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:var(--sub); margin-bottom:0.5rem; font-weight:500; }
+.art-why { font-size:0.95rem; color:#9a5c20; line-height:1.8; font-style:normal; }
+.art-lightbox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10,18,28,0.88); z-index:9997; align-items:center; justify-content:center; padding:2rem; }
+.art-lightbox.open { display:flex; }
+.art-lightbox-inner { background:#243850; max-width:680px; width:100%; max-height:90vh; overflow-y:auto; position:relative; border-radius:4px; }
+.art-lightbox-img { width:100%; max-height:60vh; object-fit:contain; display:block; background:#1a2d3e; }
+.art-lightbox-body { padding:1.5rem 1.8rem 2rem; }
+.art-lightbox-title { font-family:'Lora',Georgia,serif; font-style:italic; font-size:1.2rem; color:#f0e8d8; margin-bottom:0.4rem; line-height:1.4; }
+.art-lightbox-artist { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:#8aa0b8; margin-bottom:1rem; font-weight:500; }
+.art-lightbox-why { font-family:'Lora',Georgia,serif; font-size:1rem; color:#c8782a; line-height:1.85; }
+.art-lightbox-close { position:absolute; top:1rem; right:1.2rem; font-family:sans-serif; font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(245,240,232,0.4); background:none; border:none; cursor:pointer; }
+.art-lightbox-close:hover { color:#b8975a; }
+.poetry-section { margin-bottom:2.5rem; text-align:center; }
+.poetry-toggle { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:#8a6a30; background:none; border:none; border-bottom:1px solid #243850; cursor:pointer; padding:0.4rem 0; font-weight:500; }
+.poetry-toggle:hover { color:#b8975a; border-color:#b8975a; }
+.poetry-block { display:none; margin-top:1.8rem; padding:2.5rem; background:#243850; color:#f0e8d8; position:relative; text-align:left; border-radius:4px; }
+.poetry-block.open { display:block; }
+
+/* Animation */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.fade-in { animation: fadeUp 0.6s ease forwards; }
+.hidden { opacity:0; pointer-events:none; }
+
+/* Reveal button */
+@keyframes breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.tradition-bridge-text {
+  display:none;
+  text-align:center;
+  padding:1.4rem 0 0.8rem;
+  font-family:sans-serif;
+  font-size:0.62rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:#9a5c20;
+  animation: breathe 3.5s ease-in-out infinite;
+  border-top:1px solid #e0d8c8;
+  margin-top:0.5rem;
+}
+.poem-text { font-size:1.18rem; font-style:italic; line-height:2.2; color:#f0e8d8; margin-bottom:1.3rem; white-space:pre-line; }
+.poem-attr { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:#c8782a; margin-bottom:0.3rem; font-weight:500; }
+.poem-src { font-style:italic; font-size:0.92rem; color:rgba(245,240,232,0.6); }
+.poetry-close { position:absolute; top:1rem; right:1.2rem; font-family:sans-serif; font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(245,240,232,0.4); background:none; border:none; cursor:pointer; }
+.poetry-close:hover { color:#b8975a; }
+.share-btn {
+  display:block;
+  background:none;
+  border:1px solid #ddd3c0;
+  color:#9a5c20;
+  font-family:sans-serif;
+  font-size:0.62rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  padding:0.8rem 2rem;
+  cursor:pointer;
+  margin:1rem auto 0.5rem;
+  transition:background 0.2s, color 0.2s;
+}
+.share-btn:hover { background:#9a5c20; color:#fff; }
+.btn-back { font-family:sans-serif; font-size:var(--sub-size); letter-spacing:var(--sub-space); text-transform:uppercase; color:var(--sub); background:none; border:none; border-bottom:1px solid #c8b888; cursor:pointer; padding:0.3rem 0; display:inline-block; font-weight:500; }
+.btn-back:hover { color:#b8975a; border-color:#b8975a; }
+@media(max-width:600px){
+  header { padding:1.2rem 1.2rem 1rem; }
+  main { padding:1.8rem 1.1rem 4rem; }
+  .art-grid { grid-template-columns:1fr; }
+  .art-card img { height:260px; }
+  .art-ph { height:300px; }
+  .poetry-block { padding:1.8rem 1.2rem; }
+  .phil-block { padding:1.1rem 1.2rem; }
+  .bridge { padding:0.8rem 1.2rem; }
+  .expansion { padding:1rem 1.2rem; }
+  textarea { font-size:1rem; padding:1rem 1.2rem; }
+  .prompt { font-size:0.97rem; }
+  .resonance-line1, .resonance-line2 { font-size:1rem; }
+  .about-overlay {
+  display:none;
+  position:fixed;
+  top:0; left:0; width:100%; height:100%;
+  background:rgba(10,18,28,0.7);
+  z-index:9998;
+  align-items:center;
+  justify-content:center;
+}
+.about-overlay.open { display:flex; }
+.about-box {
+  background:#243850;
+  padding:3rem 3.5rem;
+  max-width:480px;
+  width:90%;
+  text-align:center;
+}
+.about-line1 {
+  font-family:'Lora',Georgia,serif;
+  font-size:1.05rem;
+  color:#f5efe0;
+  line-height:1.75;
+  margin-bottom:0.6rem;
+}
+.about-line2 {
+  font-family:'Lora',Georgia,serif;
+  font-size:1.05rem;
+  font-weight:500;
+  color:#c8782a;
+  line-height:1.75;
+  margin-bottom:2rem;
+}
+.about-close {
+  font-family:sans-serif;
+  font-size:0.58rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:#8aa0b8;
+  background:none;
+  border:none;
+  cursor:pointer;
+}
+.about-close:hover { color:#2d4260; }
+.header-title { cursor:pointer; }
+.header-title:hover { opacity:0.75; }
+.btn-reflect { width:100%; text-align:center; padding:1rem; }
+}
+
+/* Entry preview — small whisper at top of response */
+.entry-preview { margin-bottom:1.5rem; }
+.entry-preview-text { font-size:0.88rem; font-style:normal; color:#9a8e7e; line-height:1.7; }
+.entry-preview-more { background:none; border:none; font-family:sans-serif; font-size:0.58rem; letter-spacing:0.15em; color:#b8975a; cursor:pointer; padding:0; margin-left:0.3rem; }
+
+.key-gate { position:fixed; top:0; left:0; width:100%; height:100%; background:#ffffff; z-index:9999; display:flex; align-items:center; justify-content:center; font-family:'Lora',Georgia,serif; }
+.key-gate-inner { max-width:480px; width:90%; text-align:center; padding:2rem; }
+.key-gate-title { font-family:sans-serif; font-size:1.5rem; letter-spacing:0.22em; font-weight:300; color:#1c1810; margin-bottom:0.5rem; }
+.key-gate-sub { font-family:'Lora',Georgia,serif; font-size:0.9rem; letter-spacing:0.02em; text-transform:none; color:#c8a878; margin-bottom:2.5rem; font-style:italic; line-height:1.7; }
+.key-gate-input { width:100%; font-family:'Lora',Georgia,serif; font-size:1rem; padding:0.9rem 1rem; border:1px solid #243850; background:#ffffff; color:#2d4260; outline:none; margin-bottom:0.8rem; box-sizing:border-box; text-align:center; }
+.key-gate-input::placeholder { color:#a0b0c0; font-style:italic; }
+.key-gate-btn { width:100%; font-family:sans-serif; font-size:0.63rem; letter-spacing:0.25em; text-transform:uppercase; background:#243850; color:#f5efe0; border:none; padding:0.9rem 2rem; cursor:pointer; }
+.key-gate-btn:hover { background:#2d4260; }
+.key-gate-error { font-size:0.85rem; color:#9a5c20; margin-top:0.6rem; display:none; }
+</style>
+</head>
+<body style="background:#ffffff">
+<header>
+  <div class="logo" onclick="document.getElementById('about-overlay').classList.add('open')" style="cursor:pointer;">LIMN</div>
+  <div class="tagline">Somewhere, in all that humanity has thought about being alive, your moment rhymes.</div>
+</header>
+<div id="key-gate" class="key-gate">
+  <div class="key-gate-inner">
+    <div class="key-gate-title">LIMN</div>
+    <div class="key-gate-sub">Somewhere, in all that humanity has thought about being alive, your moment rhymes.</div>
+    <input type="password" id="key-input" class="key-gate-input" placeholder="Enter your access code" />
+    <button class="key-gate-btn" onclick="submitKey()">Enter →</button>
+    <div class="key-gate-error" id="key-error">Please enter your access code to continue.</div>
+  </div>
+</div>
+
+</div>
+<div class="about-overlay" id="about-overlay" onclick="closeAbout(event)">
+  <div class="about-box">
+    <p class="about-line1">Somewhere, in all that humanity has thought about being alive, your moment rhymes.</p>
+    <p class="about-line2">Limn finds where.</p>
+    <button class="about-close" onclick="document.getElementById('about-overlay').classList.remove('open')">close</button>
+  </div>
+</div>
+<main id="main">
+  <!-- API key configured in script below -->
+
+
+  <div id="input-section">
+    <div class="date-line" id="date-line"></div>
+    <div class="prompt">Write anything.</div>
+    <textarea id="journal-input" placeholder="A journal entry, a thought, a feeling you can't name, a conversation that stayed with you, something you noticed — anything at all..."></textarea>
+    <div class="error" id="error-msg" style="display:none"></div>
+    <button class="btn-reflect" onclick="reflect()">Reflect →</button>
+    <div class="examples-section">
+      <div class="section-label">Or try one of these</div>
+      <div id="examples-list"></div>
+    </div>
+  </div>
+
+  <div id="loading">
+    <div class="loading-text" id="loading-text">Going deeper into what you've shared…</div>
+    <div class="dots">✦ ✦ ✦</div>
+  </div>
+
+  <div id="response">
+    <div class="resonance-line1" id="resonance-line1"></div>
+    <div class="resonance-line2" id="resonance-line2"></div>
+    <div id="concept-block" class="concept-block" style="display:none">
+      <div class="concept-name" id="concept-name"></div>
+      <div class="concept-gloss" id="concept-gloss"></div>
+    </div>
+    <div class="phil-block" id="primary-block">
+      <div class="tradition" id="primary-tradition"></div>
+      <div class="phil-quote" id="primary-quote"></div>
+      <div class="phil-text" id="primary-who"></div>
+    </div>
+    <div class="tradition-bridge-text" id="reveal-btn">But there is more. Another tradition rhymes with this.</div>
+    <div class="bridge" id="bridge-block" style="display:none;">
+      <div class="bridge-label" id="relationship-label"></div>
+      <div class="bridge-text" id="mirror-relationship"></div>
+    </div>
+    <div class="phil-block mirror" id="mirror-block" style="display:none;">
+      <div class="tradition mt" id="mirror-tradition"></div>
+      <div class="phil-quote" id="mirror-quote"></div>
+      <div class="phil-text" id="mirror-who"></div>
+    </div>
+    <div class="expansion" id="expansion-block" style="display:none">
+      <div class="expansion-label">And further —</div>
+      <div class="expansion-text" id="expansion-text"></div>
+    </div>
+    <div id="lower-section" style="display:none;">
+    <div class="divider"><div class="divider-line"></div><div class="divider-star"><svg width="10" height="10" viewBox="0 0 10 10" style="display:inline-block;vertical-align:middle;"><polygon points="5,0 6.5,3.5 10,5 6.5,6.5 5,10 3.5,6.5 0,5 3.5,3.5" fill="#243850"/></svg></div><div class="divider-line"></div></div>
+    <div class="section-label">Two works that resonate</div>
+    <div class="art-grid" id="art-grid"></div>
+    <div class="entry-preview" id="entry-preview" style="margin-bottom:1.5rem;padding-top:1rem;border-top:1px solid #e0d8c8;">
+      <span class="entry-preview-text" id="entry-preview-text"></span><button class="entry-preview-more" id="entry-preview-toggle" onclick="toggleEntry()"></button>
+    </div>
+    <div class="poetry-section">
+      <button class="poetry-toggle" onclick="togglePoetry()">✦ &nbsp; A poem that found its way here &nbsp; ✦</button>
+      <div class="poetry-block" id="poetry-block">
+        <button class="poetry-close" onclick="togglePoetry()">close ✕</button>
+        <div class="poem-text" id="poem-text"></div>
+        <div class="poem-attr" id="poem-attr"></div>
+        <div class="poem-src" id="poem-src"></div>
+      </div>
+    </div>
+    <button class="share-btn" id="share-btn" onclick="shareCard()" style="display:none;">Share this reflection ↗</button>
+    <button class="btn-back" onclick="goBack()">← Begin a new entry</button>
+  </div>
+</main>
+
+<div class="art-lightbox" id="art-lightbox" onclick="closeLightbox(event)">
+  <div class="art-lightbox-inner">
+    <button class="art-lightbox-close" onclick="document.getElementById('art-lightbox').classList.remove('open')">close ✕</button>
+    <img class="art-lightbox-img" id="art-lightbox-img" src="" alt="" />
+    <div class="art-lightbox-body">
+      <div class="art-lightbox-title" id="art-lightbox-title"></div>
+      <div class="art-lightbox-artist" id="art-lightbox-artist"></div>
+      <div class="art-lightbox-why" id="art-lightbox-why"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── IMAGE PROXY + ART LIBRARY ─────────────────────────────────────────────
+// Images routed through /api/images proxy on Vercel
+// Art library loaded from /art-library.json (744 verified works)
+
+const IS_VERCEL = !window.location.hostname.includes('localhost') &&
+                  !window.location.hostname.includes('127.0.0.1') &&
+                  !window.location.hostname.includes('github.io');
+
+function proxyUrl(url) {
+  if (!url) return url;
+  if (window.location.hostname.includes('github.io')) return url;
+  if (IS_VERCEL) return `/api/images?url=${encodeURIComponent(url)}`;
+  return url;
+}
+
+let ART = {};
+let ART_KEYS = '';
+
+const ART_LOAD_PROMISE = fetch('/art-library.json')
+  .then(r => r.json())
+  .then(works => {
+    works.forEach(w => {
+      ART[w.key] = { ...w, url: proxyUrl(w.url) };
+    });
+    ART_KEYS = works.map(w => `${w.key} (${w.title} · ${w.tradition})`).join(', ');
+    console.log(`Art library loaded: ${works.length} works`);
+  })
+  .catch(err => {
+    console.warn('Art library failed to load, using fallback:', err);
+    // Fallback to small hardcoded set if JSON fails
+    const fallback = [
+      {key:'greatWave', title:'Under the Wave off Kanagawa', artist:'Katsushika Hokusai, 1831', tradition:'Japanese Ukiyo-e', orient:'L', url:'https://www.artic.edu/iiif/2/25c31d8d-21a4-9ea1-1d73-6a2eca4dda7e/full/843,/0/default.jpg'},
+      {key:'redonEyes', title:'Closed Eyes', artist:'Odilon Redon, 1890', tradition:'French Symbolism', orient:'P', url:'https://www.artic.edu/iiif/2/e966799b-97ee-1cc6-bd2f-a2b085ebe8e4/full/843,/0/default.jpg'},
+      {key:'nighthawks', title:'Nighthawks', artist:'Edward Hopper, 1942', tradition:'American Realism', orient:'L', url:'https://www.artic.edu/iiif/2/831a05de-d3f6-f4fa-a460-23008dd58dda/full/843,/0/default.jpg'},
+      {key:'seurat', title:'A Sunday on La Grande Jatte', artist:'Georges Seurat, 1886', tradition:'French Post-Impressionism', orient:'L', url:'https://www.artic.edu/iiif/2/2d484387-2509-5e8e-2c43-22f0f33f731e/full/843,/0/default.jpg'},
+      {key:'monetHaystacks', title:'Stacks of Wheat', artist:'Claude Monet, 1890', tradition:'French Impressionism', orient:'L', url:'https://www.artic.edu/iiif/2/1e0b7b73-7a67-81a0-b312-2b9736e47d10/full/843,/0/default.jpg'},
+    ];
+    fallback.forEach(w => { ART[w.key] = { ...w, url: proxyUrl(w.url) }; });
+    ART_KEYS = fallback.map(w => `${w.key} (${w.title} · ${w.tradition})`).join(', ');
+  });
+
+const RELATIONSHIP_LABELS = {
+  convergence:'Two traditions, one territory',
+  deepening:'Taking it further',
+  expansion:'An additional dimension',
+  'feminist resonance':'What was seen but not named',
+};
+
+const EXAMPLES = [
+  "I've got so much to do but I've just been watching movies instead.",
+  "It's hard to communicate sometimes — I feel the other does not hear me.",
+  "I've lived in this city for ten years and I still feel like a visitor. I don't know if that's the city or me.",
+  "I went outside early this morning before anyone was awake. The quality of the light was different.",
+  "The closer I get to my goal the further I feel from it.",
+  "My body knew something was wrong before I did. I kept ignoring it and then one day it just stopped."
+];
+
+const LOADING_TEXTS = ['Going deeper into what you\'ve shared','Listening across traditions','Somewhere, your moment rhymes...','Gathering thought from many worlds','Following the thought wherever it leads'];
+
+document.getElementById('date-line').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+const exList = document.getElementById('examples-list');
+EXAMPLES.forEach(ex=>{
+  const btn=document.createElement('button'); btn.className='example-btn';
+  btn.textContent='"'+ex.slice(0,88)+'…"';
+  btn.onclick=()=>{document.getElementById('journal-input').value=ex;};
+  exList.appendChild(btn);
+});
+
+// ─── API KEY ───────────────────────────────────────────────────────
+// API key stored in session only — never in the file
+let apiKey = sessionStorage.getItem('limn_key') || '';
+
+function submitKey() {
+  const input = document.getElementById('key-input').value.trim();
+  if (!input) {
+    document.getElementById('key-error').style.display = 'block';
+    return;
+  }
+  apiKey = input;
+  sessionStorage.setItem('limn_key', apiKey);
+  document.getElementById('key-gate').style.display = 'none';
+}
+
+document.getElementById('key-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') submitKey();
+});
+
+if (apiKey) {
+  document.getElementById('key-gate').style.display = 'none';
+}
+// ──────────────────────────────────────────────────────────────────
+let loadingInterval;
+
+
+
+function buildPrompt(entry){
+  return `You are the philosophical heart of Limen, a journaling app. Your role is not to analyze or interpret. It is to meet.
+
+Journal entry: "${entry}"
+
+YOUR CORE TASK — READ ON THREE REGISTERS BEFORE CHOOSING:
+Before choosing any thinker, concept, or artwork, read the entry through three lenses simultaneously. These are not filters — a thinker can speak powerfully to just one register and still be the right match. The point is to slow the reading down so the obvious emotional surface does not crowd out the subtler layers.
+
+REGISTER 1 — EMOTIONAL/AFFECTIVE:
+What is the feeling tone beneath the stated emotion? Not the surface label but the specific texture — the exhaustion of sustained effort, the vertigo of not-landing, the ache of unreciprocated attention, the strange flatness after wanting something for too long. This register is real and important. But don't stop here.
+
+REGISTER 2 — BODILY/SOMATIC:
+Is there a body in this entry, even implicitly? A gesture, a posture, a threshold, a knowing that arrived before language. Even entries that seem purely emotional often carry a bodily shape — find it. The body may be the most precise entry point.
+
+REGISTER 3 — ASSOCIATIVE/IMAGISTIC:
+What does this entry rhyme with beyond its surface? What image, philosophical territory, or unexpected shape does it open? This register produces the most surprising and precise matches — the ones the person could not have anticipated. Read the entry for what it resembles, not just what it says.
+
+THEN — ask: which thinker speaks most precisely to what this entry is actually carrying? Whether that is one register read with full depth, two registers in productive tension, or the unexpected place where all three converge. Let the reading lead — not the first thinker that surfaces.
+
+METACOGNITIVE CHECK — do this before committing to any thinker:
+Ask yourself: am I reaching for this thinker because they genuinely speak most precisely to this specific entry — its texture, its bodily shape, its associative rhymes — or because they are statistically associated with this type of entry in my training? Striving entries pull Han. Time entries pull Bergson. Conversation entries pull Levinas or Bakhtin. Body entries pull Merleau-Ponty. If you are reaching for the categorically associated thinker rather than the most precise match — stop. Go deeper. Find the thinker who speaks to the specific texture of this entry, not its general category. The right match is almost never the first one that surfaces.
+
+The match is a recognition: the reader arrives at a thinker or concept and feels something already present in their experience has now been seen. The tradition does not interpret the entry. It meets it.
+
+TWO-THINKER LOGIC — this is the philosophical heart of every response:
+PRIMARY THINKER: Opens with a handhold — a voice the person might have some cultural thread to, even if they've never studied it. Something that feels like it belongs to the breadth of human thought they might recognise. Usually from the first-position list below.
+SECOND THINKER: Arrives from genuinely elsewhere — adds what the first tradition couldn't reach. A different angle on the same truth, or a truth the first missed entirely. Together they are more true than either alone.
+Example: Merleau-Ponty names the flesh / Irigaray shows what philosophy forgot about the elemental body
+Example: Bergson names duration / Dōgen shows that even emptiness is time doing something
+Example: Heidegger names dwelling / Watsuji shows that climate is not backdrop but the very medium of being
+Example: Spinoza names conatus / Lorde names what happens when that drive is systematically suppressed
+
+POSITION GUIDELINES — which tradition opens, which deepens:
+
+FIRST POSITION (opens most naturally — familiar handhold):
+The great tradition: Heraclitus, Anaximander, Empedocles, Parmenides, Plato, Aristotle, Epicurus, Marcus Aurelius, Plotinus
+Medieval: Hildegard of Bingen, Meister Eckhart, Julian of Norwich, Ibn Arabi, Rumi, Duns Scotus
+Early modern: Spinoza, Hume, Kant, Vico, Leibniz
+19th century: Hegel, Kierkegaard, Nietzsche, Schopenhauer, William James, Thoreau, Emerson
+20th century Continental: Husserl, Heidegger, Merleau-Ponty, Sartre, de Beauvoir, Levinas, Arendt, Wittgenstein, Benjamin, Bakhtin, Bachelard, Bergson, Derrida, Foucault, Ricoeur
+Contemporary: Han Byung-Chul (achievement society, burnout, transparency), Simone Weil (attention, gravity and grace, affliction), Charles Taylor
+
+BOTH FIRST AND SECOND (depending on genuine fit):
+Deleuze/Guattari — can open when the entry is genuinely about flux, becoming, multiplicity. If they open, pair with something grounding as second. Never open with them for mystical or ecological entries.
+Massumi — same logic as Deleuze/Guattari
+
+STRONG SECOND POSITION (deepens what the first missed):
+Feminist philosophy: Irigaray (elemental materialism — water, air, earth, fire as philosophical categories, not metaphors), de Beauvoir, Braidotti, Genevieve Lloyd, Cavarero, Kelly Oliver
+Affect theory: Kathleen Stewart, Ahmed, Teresa Brennan, Grosz, Barad
+Ecological philosophy: Plumwood, Haraway, Tsing, Abram, Toadvine, Viveiros de Castro
+
+NATURAL SECOND POSITION (expansion from elsewhere):
+Japanese philosophy: Watsuji (always: Kyoto School ethicist), Nishida (pure experience, basho), Yuasa (body-schema, the dark body), Zhuangzi, Dōgen — arrive as the thing Western thought missed about body, climate, place, time
+Buddhist thought: ALWAYS second, NEVER opens alone. Arrives as genuine expansion. Use precise terms — never wellness language.
+  Nagarjuna (śūnyatā), Dōgen (being-time), Thich Nhat Hanh (interbeing), Vasubandhu, Machig Labdrön, Chandrakirti
+  Theravada: anicca, anattā, paṭicca-samuppāda — presented as philosophy not spirituality
+  Living tradition teachers — philosophically rigorous, not merely inspirational:
+    Shunryu Suzuki (beginner's mind as epistemology — the expert's mind forecloses; the beginner's mind opens. Zen Mind, Beginner's Mind. Source: cuke.com/shunryusuzuki.com)
+    Chögyam Trungpa (spiritual materialism — the ego's use of spiritual practice to reinforce itself; basic goodness; the cocoon as what taming produces. Cutting Through Spiritual Materialism, Shambhala)
+    Thinley Norbu (Magic Dance, White Sail — Dzogchen philosophy at its most poetic and precise; the nature of mind as primordially pure; display and essence)
+Indian philosophy: Upanishads, Patanjali, Abhinavagupta, Kashmir Shaivism, Krishnamurti — second position
+Islamic philosophy: Ibn Arabi, Al-Ghazali, Averroes, Avicenna — second position
+
+OCCASIONAL FIRST (when entry directly calls for it — relation, land, listening, ecological grief, community):
+Indigenous philosophy — serious philosophers, not cultural representatives:
+  Winona LaDuke (Anishinaabe — land as relation, not resource)
+  Richard Atleo/Umeek (Nuu-chah-nulth — everything is one, tsawalk)
+  Dr. Enrique Salmón (Rarámuri — kincentric ecology, the world as kin)
+  Lee Maracle (Stó:lō — story as philosophy, the land speaks)
+  Robin Wall Kimmerer (Potawatomi — grammar of animacy, reciprocity)
+  Vine Deloria Jr. (Lakota — place-based knowledge, critique of Western science)
+  Glen Coulthard, Leanne Betasamosake Simpson, Kim TallBear
+  Ungunmerr-Baumann (dadirri — deep listening as epistemology)
+  Ubuntu philosophy, Buen Vivir
+
+TURN/REVELATION SECOND (names what the first tradition couldn't see):
+Black feminist/diasporic: Lorde, Wynter, hooks, Moten, Mbembe, Glissant, Fanon, Gilroy, Spillers, Hartman
+LAST RESORT ONLY: Berlant
+
+CRITICAL PROTECTION AGAINST NEW-AGE FLATTENING:
+Buddhist, Indigenous, and Eastern thought must arrive with the same philosophical rigor as Western thought. Use the actual term in its actual language. Name the actual thinker. State the actual philosophical claim. "Anicca" is not "everything changes." "Śūnyatā" is not emptiness of meaning. Dadirri is not "mindfulness." Precision is what protects these traditions.
+
+CONCEPT AND THINKER MUST MATCH EXACTLY:
+Beginner's mind → Shunryu Suzuki | Spiritual materialism → Chögyam Trungpa | Basic goodness → Chögyam Trungpa | Haecceity → Deleuze/Guattari | Conatus → Spinoza | Fūdo → Watsuji | Duration → Bergson | Heteroglossia → Bakhtin | Dadirri → Ungunmerr-Baumann | Emplacement → Howes | Dwelling → Ingold | Śūnyatā → Nagarjuna | Anicca → Theravada/Pali | Interbeing → Thich Nhat Hanh | Opacity → Glissant | Affect → Massumi | Sympoiesis → Haraway | Tsawalk → Atleo | Kincentric ecology → Salmón
+
+CONCEPT NAME must be identical in opening and concept_name field.
+
+CRITICAL — CONCEPT NAMING: The concept name in Move 2 must be the philosopher's own term, not a mythological figure or literary character. "Camus called this the absurd" not "Sisyphus called this labor." "Kafka called this the trial" not "Josef K. called this." The philosopher names the concept — never a character from their work.
+
+TONE: Warm, direct, learned. Not therapeutic. Not new-age. Not academic. Spoken not written. A curious 17-year-old follows it without losing the depth. Never: "invites us to", "reminds us", "journey", "growth", "healing", "transform", "explore", "navigate", "sit with", "hold space", "unpack", "argued", "arguing", "spent decades", "spent their life", "devoted their career". Never soften a philosophical claim into advice or comfort.
+
+OPENING — always two moves, two separate sentences:
+Read the entry on all registers simultaneously — sensory, temporal, affective, relational — before deciding how to open. Then ask: is what rhymes here a word, or a whole way of inhabiting, understanding, and reflecting on the world? Lead with a concept only when the concept itself is the most precise meeting point — when the word names something the entry is carrying that no thinker's name alone could name as exactly. If the thinker's entire orientation is the meeting point — their sensibility, their territory, the texture of their thought — lead with the thinker. Let the entry decide.
+MOVE 1: One simple direct observation. Sensory or temporal. Not a metaphor. Not inside the person's head. Short. Plain. Direct.
+MOVE 2 (concept-led): "[Thinker] called this [concept]." MAXIMUM 6 WORDS. No elaboration. e.g. "Bergson called this duration." "Levinas called this the face." "Nagarjuna called this śūnyatā."
+MOVE 2 (thinker-led): "There is a [philosopher/monk/poet/anthropologist] whose work rhymes with this. [Name]." The name is the final word. Nothing after it.
+CRITICAL: Choose ONE thinker before writing anything. Commit to that choice completely.
+
+PHILOSOPHER DESCRIPTIONS — exactly 2 sentences, short:
+Sentence 1: [Name] was a [tradition word], [one fact — what they refused, showed, or built their work around]. One clause only. No elaboration.
+Sentence 2: What this entry shares with their work. Direct. No "What this entry carries is precisely..." — just state it.
+Examples:
+"Bergson was a vitalist who insisted clock time is a fiction — a grid thrown over something alive."
+"Merleau-Ponty was a phenomenologist who refused to separate mind from the body that carries it."
+"Han Byung-Chul is a philosopher who diagnosed the exhaustion of societies that replace command with seduction — achievement becomes self-violence."
+"Goffman was a social theorist who showed selfhood is not interior first but performed before audiences we rarely chose."
+"Watsuji was a Kyoto School ethicist who refused to separate human existence from climate, season, and the surrounding world."
+"Nagarjuna was a Madhyamaka philosopher who showed that nothing — not the self, not the moment — has inherent existence."
+
+CONCEPT GLOSS — one compressed clause, under 20 words. Precise dictionary style. No interpretation.
+"Duration — Bergson's term for lived time as continuous qualitative flow, not measurable instants."
+"Śūnyatā — Nagarjuna's term for the absence of inherent existence in all phenomena, including the self."
+"Dadirri — Ungunmerr-Baumann's term for deep listening as a way of knowing, prior to speech."
+
+BRIDGE (mirror_relationship) — one sentence only. 25 words maximum. Names both thinkers. Sharp. What becomes visible holding them together.
+
+AND FURTHER — EXACTLY 2 sentences. Both thinkers named. Short. Spoken. Level of the idea only. Does not address the person.
+
+ARTWORKS — choose two from this curated library. Strong preference: one from the Western tradition and one from outside it. IMPORTANT: Wanderer Above the Sea of Fog (casparDavid) is anthropocentric — avoid as default. nighthawks and greatWave are powerful but must not dominate — vary choices across the 46 works. For nature/impermanence/ecological entries prefer japanesePines, hiroshigeRain, lascaux, buddhistThangka, chineseLandscape, audubon, haeckel before reaching for the obvious European works — Islamic, East Asian, South Asian, African, Indigenous, pre-Columbian, Byzantine, Persian, Japanese. Only choose two Western works if both are genuinely the most precise match and no other tradition speaks as directly to this entry. Match quality of experience, not subject matter.
+${ART_KEYS}
+
+JSON only, no markdown:
+{
+  "resonance": "Two sentences. Sentence 1: direct sensory observation of what the entry carries. Sentence 2: '[Thinker] called this [concept].' OR 'There is a [philosopher/monk/poet/anthropologist] whose work rhymes with this. [Name].' Together under 40 words.",
+  "concept_name": "Concept term if concept-led — MUST match primary thinker and opening exactly. Else empty string.",
+  "concept_gloss": "One compressed clause under 20 words. Precise dictionary style. No interpretation beyond definition.",
+  "primary_tradition": "Thinker · Tradition",
+  "primary_who": "ONE sentence only — starting with the philosopher's last name. FORBIDDEN: 'was a philosopher who', 'was a teacher who', 'was a theorist who'. FORBIDDEN: anatomical shorthand — never 'inside the head', never 'in the mind' as location. For combative thinkers: refused, insisted. For embodied/contemplative/relational thinkers use opening verbs: found, showed, understood, traced, held, named, attended to. e.g. 'Merleau-Ponty found that body and world are woven from a single fabric — perception is not separate from the flesh of the world.' 'Weil found that attention — real attention, not effort — is the rarest form of love.' 'Dōgen understood being and time as one continuous movement, not two things.' Just the name and what they found.",
+  "primary_quote": "Real verified quote — MAXIMUM 20 WORDS. Short. One clause only. If the quote is longer than 20 words, find a shorter one or use just the most essential phrase.",
+  "relationship_type": "convergence/deepening/expansion/feminist resonance",
+  "mirror_tradition": "Thinker · Tradition",
+  "mirror_who": "ONE sentence only. Same strict structure as primary_who — last name first, active verb directly. FORBIDDEN: 'was a [x] who'.",
+  "mirror_quote": "Real verified quote — MAXIMUM 20 WORDS. Short. One clause only.",
+  "mirror_relationship": "One sentence, 25 words maximum. Name BOTH thinkers. Sharp. What becomes visible holding them together.",
+  "expansion": "EXACTLY 2 sentences — short, spoken, plain. Both thinkers named by name. Maximum 20 words per sentence. Level of the idea only. Never 'you' or 'your'. Never more than 2 sentences — if you write a third, delete it and shorten the first two instead.",
+  "artwork1_key": "key from library",
+  "artwork1_why": "One sentence — quality of experience this work shares with the entry",
+  "artwork2_key": "Different key, different tradition",
+  "artwork2_why": "One sentence — quality of experience this work shares with the entry",
+  "poem_text": "3-5 lines — real verified poem. DECISION RULE: Before choosing any poem, ask — is there a Japanese, Chinese, Sanskrit, Arabic, Persian, Tibetan, Indigenous, African, or Latin American poem that meets this entry with equal or greater precision? If yes — use that one. Only use American or British poets if no other tradition speaks as directly. NEVER default to Whitman, Frost, or Mary Oliver. FOR SENSORY/NATURE/IMPERMANENCE: Basho or Issa almost always. FOR LONGING: Hafiz. FOR GRIEF AND THE ORDINARY: Du Fu. FOR DEVOTION: Mirabai or Kabir. FOR BODY/EARTH: Joy Harjo or Senghor. FOR LANGUAGE/WRITING: Mahmoud Darwish. FOR CONTEMPORARY ALIENATION: Forugh Farrokhzad or Warsan Shire. Western canonical (Rilke, Celan, Dickinson) only when genuinely most precise.",
+  "poem_attribution": "Poet · tradition",
+  "poem_source": "Title and date"
+}`;
+}
+function revealSecondTradition(){
+  const btn = document.getElementById('reveal-btn');
+  if (btn) { btn.style.transition = 'opacity 0.5s ease'; btn.style.opacity = '0'; setTimeout(() => btn.style.display = 'none', 500); }
+
+  function fadeShow(id, delay) {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = 'block';
+      el.style.opacity = '0';
+      el.style.transition = 'opacity 0.7s ease';
+      setTimeout(() => { el.style.opacity = '1'; }, 50);
+    }, delay);
+  }
+
+  fadeShow('bridge-block', 500);
+  fadeShow('mirror-block', 6500);  // 6s after bridge
+
+  // expansion after mirror
+  setTimeout(() => {
+    const exp = document.getElementById('expansion-block');
+    if (exp && exp.getAttribute('data-has-content') === '1') {
+      exp.style.display = 'block';
+      exp.style.opacity = '0';
+      exp.style.transition = 'opacity 1.0s ease';
+      setTimeout(() => { exp.style.opacity = '1'; }, 50);
+    }
+  }, 16000);
+
+  // art and poem
+  setTimeout(() => {
+    const lower = document.getElementById('lower-section');
+    if (lower) {
+      lower.style.display = 'block';
+      lower.style.opacity = '0';
+      lower.style.transition = 'opacity 1.0s ease';
+      setTimeout(() => { lower.style.opacity = '1'; }, 50);
+    }
+  }, 19500);
+}
+
+async function reflect(){
+  const text=document.getElementById('journal-input').value.trim();
+  if(text.length<20){showError('Write a little more before reflecting.');return;}
+  hideError();
+  document.getElementById('input-section').style.display='none';
+  document.getElementById('response').style.display='none';
+  document.getElementById('loading').style.display='block';
+  let tick=0;
+  loadingInterval=setInterval(()=>{tick++;document.getElementById('loading-text').textContent=LOADING_TEXTS[tick%LOADING_TEXTS.length]+'…';},2000);
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,messages:[{role:'user',content:buildPrompt(text)}]})
+    });
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.error?.message||'API error '+res.status);
+    const raw=data.content[0].text;
+    const s=raw.indexOf('{'),e=raw.lastIndexOf('}');
+    if(s===-1) throw new Error('No JSON in response');
+    const d=JSON.parse(raw.slice(s,e+1));
+    if(!d.resonance) throw new Error('Invalid response format');
+    clearInterval(loadingInterval);
+    renderResponse(text,d);
+  }catch(err){
+    clearInterval(loadingInterval);
+    document.getElementById('loading').style.display='none';
+    document.getElementById('input-section').style.display='block';
+    showError('Error: '+err.message);
+  }
+}
+
+async function renderResponse(entry,d){
+  document.getElementById('loading').style.display='none';
+  // Reset all sequenced elements to hidden state
+  ['bridge-block','mirror-block','expansion-block','lower-section'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.display='none'; el.style.opacity=''; }
+  });
+  const revBtn = document.getElementById('reveal-btn');
+  if (revBtn) { revBtn.style.display='none'; revBtn.style.opacity=''; }
+  // Hide first section elements — will fade in sequentially
+  ['resonance-line1','resonance-line2','concept-block','primary-block'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.opacity='0'; el.style.transition='none'; }
+  });
+  // Entry preview
+  const shortEntry = entry.length > 120 ? entry.slice(0, 120) + '…' : entry;
+  const previewEl = document.getElementById('entry-preview-text');
+  previewEl.textContent = shortEntry;
+  previewEl.setAttribute('data-short', shortEntry);
+  previewEl.setAttribute('data-full', entry);
+  const toggleBtn = document.getElementById('entry-preview-toggle');
+  if (entry.length > 120) { toggleBtn.textContent = ' ↓ more'; } else { toggleBtn.textContent = ''; }
+  // Split resonance into two lines — first sentence, then the rhyme/word line
+  const res = d.resonance || '';
+  const splitIdx = res.search(/\.\s+There is|There is/);
+  if (splitIdx > 0) {
+    document.getElementById('resonance-line1').textContent = res.slice(0, splitIdx).trim().replace(/\.$/, '') + '.';
+    document.getElementById('resonance-line2').textContent = res.slice(splitIdx).trim().replace(/^\.\s*/, '');
+  } else {
+    const dotIdx = res.indexOf('. ');
+    if (dotIdx > 0) {
+      document.getElementById('resonance-line1').textContent = res.slice(0, dotIdx + 1).trim();
+      document.getElementById('resonance-line2').textContent = res.slice(dotIdx + 2).trim();
+    } else {
+      document.getElementById('resonance-line1').textContent = res;
+      document.getElementById('resonance-line2').textContent = '';
+    }
+  }
+
+  if(d.concept_name?.trim()){
+    document.getElementById('concept-block').style.display='block';
+    document.getElementById('concept-name').textContent=d.concept_name;
+    document.getElementById('concept-gloss').textContent=d.concept_gloss;
+    document.getElementById('primary-block').style.borderTop='1px solid #e0d8c8';
+  }else{
+    document.getElementById('concept-block').style.display='none';
+    document.getElementById('primary-block').style.borderTop='none';
+  }
+
+  document.getElementById('primary-tradition').textContent=d.primary_tradition;
+  document.getElementById('primary-who').textContent=d.primary_who;
+  document.getElementById('primary-quote').textContent=d.primary_quote;
+  document.getElementById('relationship-label').textContent=RELATIONSHIP_LABELS[d.relationship_type]||d.relationship_type;
+  document.getElementById('mirror-relationship').textContent=d.mirror_relationship;
+  document.getElementById('mirror-tradition').textContent=d.mirror_tradition;
+  document.getElementById('mirror-who').textContent=d.mirror_who;
+  document.getElementById('mirror-quote').textContent=d.mirror_quote;
+
+  if(d.expansion?.trim()){document.getElementById('expansion-text').textContent=d.expansion; document.getElementById('expansion-block').style.display='none'; document.getElementById('expansion-block').setAttribute('data-has-content','1');}
+  else{document.getElementById('expansion-block').style.display='none'; document.getElementById('expansion-block').setAttribute('data-has-content','0');}
+
+  const grid=document.getElementById('art-grid');
+  grid.innerHTML='';
+
+  function renderArtCard(card, art, why) {
+    const img = document.createElement('img');
+    img.alt = art.title;
+    if (art.orient === 'P') img.classList.add('orient-portrait');
+    if (art.orient === 'S') img.classList.add('orient-square');
+    img.onerror = function() {
+      if (!this.dataset.retried) {
+        this.dataset.retried = '1';
+        const rawUrl = art.url?.includes('/api/images') ? decodeURIComponent(art.url.split('url=')[1]||'') : null;
+        if (rawUrl && rawUrl !== art.url) { this.src = rawUrl; return; }
+      }
+      this.style.display = 'none';
+      const ph = document.createElement('div');
+      ph.className = 'art-ph';
+      ph.innerHTML = `<div class="art-ph-t">${art.title}</div><div class="art-ph-s">${art.tradition}</div>`;
+      card.insertBefore(ph, card.firstChild);
+    };
+    img.src = art.url;
+    const meta = document.createElement('div');
+    meta.className = 'art-meta';
+    meta.innerHTML = `<div class="art-title">${art.title}</div><div class="art-artist">${art.artist} · ${art.tradition}</div><div class="art-why">${why}</div>`;
+    card.appendChild(img);
+    card.appendChild(meta);
+    card.addEventListener('click', () => openLightbox(art, why));
+  }
+
+  function renderArtPlaceholder(card, title, tradition, why) {
+    const ph = document.createElement('div');
+    ph.className = 'art-ph';
+    ph.innerHTML = `<div class="art-ph-t">${title}</div><div class="art-ph-s">${tradition}</div>`;
+    const meta = document.createElement('div');
+    meta.className = 'art-meta';
+    meta.innerHTML = `<div class="art-title">${title}</div><div class="art-artist">${tradition}</div><div class="art-why">${why}</div>`;
+    card.appendChild(ph);
+    card.appendChild(meta);
+  }
+
+  // Wait for ART library to load before rendering images
+  await ART_LOAD_PROMISE;
+  console.log('Rendering art — ART keys available:', Object.keys(ART).slice(0,5).join(', '));
+  console.log('AI chose:', d.artwork1_key, d.artwork2_key);
+
+  const artKeys = Object.keys(ART);
+  const card1 = document.createElement('div'); card1.className = 'art-card';
+  const card2 = document.createElement('div'); card2.className = 'art-card';
+  grid.appendChild(card1);
+  grid.appendChild(card2);
+
+  [
+    { key: d.artwork1_key, why: d.artwork1_why, card: card1, fallbackIdx: 0 },
+    { key: d.artwork2_key, why: d.artwork2_why, card: card2, fallbackIdx: 3 },
+  ].forEach(({ key, why, card, fallbackIdx }) => {
+    const art = ART[key] || ART[artKeys[fallbackIdx % artKeys.length]];
+    if (art) {
+      renderArtCard(card, art, why);
+    } else {
+      renderArtPlaceholder(card, key || 'Artwork', '', why);
+    }
+  });
+
+  document.getElementById('poem-text').textContent=d.poem_text;
+  document.getElementById('poem-attr').textContent=d.poem_attribution;
+  document.getElementById('poem-src').textContent=d.poem_source;
+  document.getElementById('poetry-block').classList.remove('open');
+  document.getElementById('response').style.display='block';
+
+  // Sequential fade-in — slow and deliberate
+  const conceptExists = !!(d.concept_name?.trim());
+  const LINE_STEP = 4000;    // 4s between opening lines
+  const CONCEPT_STEP = 8000; // 8s on concept box
+  const BOX_STEP = 11000;    // 11s on philosopher box — long enough to read
+
+  function fadeIn(id, delay, duration) {
+    const el = document.getElementById(id);
+    if (!el) return 0;
+    if (el.style.display === 'none' && id !== 'concept-block') return 0;
+    el.style.opacity = '0';
+    el.style.transition = `opacity ${duration||1.0}s ease`;
+    setTimeout(() => { el.style.opacity = '1'; }, delay);
+    return delay;
+  }
+
+  let d2 = 0;
+  fadeIn('resonance-line1', d2, 0.9); d2 += LINE_STEP;
+  fadeIn('resonance-line2', d2, 0.9); d2 += LINE_STEP + 500;
+  if (conceptExists) { fadeIn('concept-block', d2, 1.0); d2 += CONCEPT_STEP; }
+  fadeIn('primary-block', d2, 1.0); d2 += BOX_STEP;
+
+  // Show breathing text
+  setTimeout(() => {
+    const bridge = document.getElementById('reveal-btn');
+    if (bridge) {
+      bridge.style.display = 'block';
+      bridge.style.opacity = '0';
+      bridge.style.transition = 'opacity 1.2s ease';
+      setTimeout(() => { bridge.style.opacity = '0.6'; }, 100);
+    }
+  }, d2 + 500);
+
+  // Auto-reveal after 10s of breathing
+  setTimeout(() => {
+    revealSecondTradition();
+  }, d2 + 10500);
+  window.scrollTo({top:0,behavior:'smooth'});
+  // Show share button after everything has loaded
+  setTimeout(() => {
+    const shareBtn = document.getElementById('share-btn');
+    if (shareBtn) shareBtn.style.display = 'block';
+  }, 3000);
+}
+
+function toggleEntry(){
+  const el = document.getElementById('entry-preview-text');
+  const btn = document.getElementById('entry-preview-toggle');
+  const full = el.getAttribute('data-full');
+  const short = el.getAttribute('data-short');
+  if (el.textContent === short) {
+    el.textContent = full;
+    btn.textContent = ' ↑';
+  } else {
+    el.textContent = short;
+    btn.textContent = ' ↓ more';
+  }
+}
+function togglePoetry(){document.getElementById('poetry-block').classList.toggle('open');}
+
+// Force divider star color — override any cached CSS
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.divider-star').forEach(el => {
+    el.style.setProperty('color', '#9a5c20', 'important');
+  });
+});
+
+function shareCard(){
+  const line1 = document.getElementById('resonance-line1').textContent;
+  const line2 = document.getElementById('resonance-line2').textContent;
+  const concept = document.getElementById('concept-name').textContent;
+  const gloss = document.getElementById('concept-gloss').textContent;
+  const primaryTrad = document.getElementById('primary-tradition').textContent;
+  const primaryQuote = document.getElementById('primary-quote').textContent;
+  const primaryWho = document.getElementById('primary-who').textContent;
+  const bridge = document.getElementById('mirror-relationship').textContent;
+  const mirrorTrad = document.getElementById('mirror-tradition').textContent;
+  const mirrorQuote = document.getElementById('mirror-quote').textContent;
+  const mirrorWho = document.getElementById('mirror-who').textContent;
+  const poem = document.getElementById('poem-text').textContent;
+  const poemAttr = document.getElementById('poem-attr').textContent;
+
+  const firstSentence = (text) => {
+    const match = text.match(/^[^.!?]+[.!?]/);
+    return match ? match[0] : text;
+  };
+
+  // Build card using DOM — no nested HTML template literals
+  const win = window.open('', '_blank');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8">');
+  win.document.write('<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">');
+  win.document.write('<style>');
+  win.document.write('* { margin:0; padding:0; box-sizing:border-box; }');
+  win.document.write('body { background:#ffffff; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; font-family:Lora,Georgia,serif; }');
+  win.document.write('.card { background:#f0a830; border-radius:22px; padding:3rem 2.6rem; max-width:480px; width:100%; }');
+  win.document.write('.l1 { font-size:0.92rem; color:#2d4260; line-height:1.75; margin-bottom:0.4rem; }');
+  win.document.write('.l2 { font-size:0.92rem; font-weight:500; color:#ffeed0; line-height:1.75; margin-bottom:1.6rem; }');
+  win.document.write('.cn { font-family:sans-serif; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:#2a1005; font-weight:700; margin-bottom:0.3rem; }');
+  win.document.write('.cg { font-size:0.83rem; color:#ffeed0; line-height:1.7; margin-bottom:1.5rem; }');
+  win.document.write('.tr { font-family:sans-serif; font-size:0.6rem; letter-spacing:0.16em; text-transform:uppercase; color:#2a1005; font-weight:700; margin-bottom:0.4rem; }');
+  win.document.write('.pq { font-size:0.8rem; font-style:italic; color:#2d4260; line-height:1.75; opacity:0.85; margin-bottom:0.6rem; }');
+  win.document.write('.pw { font-size:0.83rem; color:#2d4260; line-height:1.75; margin-bottom:0.2rem; }');
+  win.document.write('.br { font-size:0.85rem; color:#ffeed0; line-height:1.75; border-left:2px solid rgba(255,238,208,0.7); padding-left:0.85rem; margin:0; opacity:0.95; }');
+  win.document.write('.dv { display:flex; align-items:center; gap:0.6rem; margin:1.4rem 0; }');
+  win.document.write('.dl { flex:1; height:0.5px; background:#2a1005; opacity:0.2; }');
+  win.document.write('.pm { font-size:0.85rem; font-style:italic; color:#f0e8d8; line-height:1.9; white-space:pre-line; }');
+  win.document.write('.pa { font-family:sans-serif; font-size:0.52rem; letter-spacing:0.14em; color:#c8782a; text-transform:uppercase; margin-top:0.4rem; }');
+  win.document.write('.lt { font-family:sans-serif; font-size:0.48rem; letter-spacing:0.28em; text-transform:uppercase; color:#243850; margin-top:1.6rem; text-align:right; font-weight:700; }');
+  win.document.write('.cb { display:block; width:100%; margin-top:1rem; padding:0.7rem; background:none; border:1px solid rgba(42,16,5,0.3); color:#2a1005; font-family:sans-serif; font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; border-radius:4px; opacity:0.6; }');
+  win.document.write('</style></head><body><div class="card">');
+
+  const burstLg = '<svg width="18" height="18" viewBox="0 0 24 24"><line x1="12" y1="12" x2="12" y2="2" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="20" y2="4" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="22" y2="12" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="20" y2="20" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="12" y2="22" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="4" y2="20" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="2" y2="12" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="4" y2="4" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="17" y2="3" stroke="#243850" stroke-width="0.6" opacity="0.4"/><line x1="12" y1="12" x2="21" y2="17" stroke="#243850" stroke-width="0.6" opacity="0.4"/><line x1="12" y1="12" x2="3" y2="7" stroke="#243850" stroke-width="0.6" opacity="0.4"/><line x1="12" y1="12" x2="7" y2="3" stroke="#243850" stroke-width="0.6" opacity="0.4"/></svg>';
+  const burstSm = '<svg width="13" height="13" viewBox="0 0 24 24"><line x1="12" y1="12" x2="12" y2="2" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="20" y2="4" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="22" y2="12" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="20" y2="20" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="12" y2="22" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="4" y2="20" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="2" y2="12" stroke="#243850" stroke-width="0.9" opacity="0.6"/><line x1="12" y1="12" x2="4" y2="4" stroke="#243850" stroke-width="0.9" opacity="0.6"/></svg>';
+  const divider = '<div class="dv"><div class="dl"></div>' + burstLg + '<div class="dl"></div></div>';
+  const dividerSm = '<div class="dv"><div class="dl"></div>' + burstSm + '<div class="dl"></div></div>';
+  const hairline = '<div style="height:0.5px;background:#2a1005;opacity:0.15;margin:1.2rem 0 1.6rem;"></div>';
+
+  win.document.write('<div class="l1">' + line1 + '</div>');
+  win.document.write('<div class="l2">' + line2 + '</div>');
+  if (concept) {
+    win.document.write('<div class="cn">' + concept + '</div>');
+    win.document.write('<div class="cg">' + gloss + '</div>');
+  }
+  win.document.write(hairline);
+  win.document.write('<div class="tr">' + primaryTrad + '</div>');
+  win.document.write('<div class="pq">' + primaryQuote + '</div>');
+  win.document.write('<div class="pw">' + firstSentence(primaryWho) + '</div>');
+  win.document.write(divider);
+  win.document.write('<div class="br">' + bridge + '</div>');
+  win.document.write(divider);
+  win.document.write('<div class="tr">' + mirrorTrad + '</div>');
+  win.document.write('<div class="pq">' + mirrorQuote + '</div>');
+  win.document.write('<div class="pw">' + firstSentence(mirrorWho) + '</div>');
+  win.document.write(divider);
+  win.document.write('<div style="background:#243850;border-radius:8px;padding:1.1rem 1.2rem;margin-bottom:0.8rem;"><div class="pm">' + poem + '</div><div class="pa">' + poemAttr + '</div></div>');
+  win.document.write('<div class="lt">LIMN</div>');
+  win.document.write('<div style="display:flex;gap:0.8rem;margin-top:1rem;">');
+  win.document.write('<button class="cb" onclick="saveImg()">Save as image</button>');
+  win.document.write('<button class="cb" onclick="shareCard()">Share</button>');
+  win.document.write('</div>');
+  win.document.write('<script>function shareCard(){var t=document.querySelector(\'.card\').innerText;if(navigator.share){navigator.share({title:\'Limn\',text:t})}else{navigator.clipboard.writeText(t).then(function(){alert(\'Copied to clipboard!\')});}}<\/script>');
+  win.document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>');
+  win.document.write('<script>function saveImg(){html2canvas(document.querySelector(\'.card\'),{scale:2,backgroundColor:null}).then(function(c){var a=document.createElement(\'a\');a.download=\'limn-reflection.png\';a.href=c.toDataURL(\'image/png\');a.click()})}<\/script>');
+  win.document.write('</div></body></html>');
+  win.document.close();
+}
+function shareCard_old_disabled(){
+  const line1 = document.getElementById('resonance-line1').textContent;
+  const line2 = document.getElementById('resonance-line2').textContent;
+  const concept = document.getElementById('concept-name').textContent;
+  const gloss = document.getElementById('concept-gloss').textContent;
+  const primaryTrad = document.getElementById('primary-tradition').textContent;
+  const primaryWho = document.getElementById('primary-who').textContent;
+  const bridge = document.getElementById('mirror-relationship').textContent;
+  const mirrorTrad = document.getElementById('mirror-tradition').textContent;
+  const mirrorWho = document.getElementById('mirror-who').textContent;
+  const poem = document.getElementById('poem-text').textContent;
+  const poemAttr = document.getElementById('poem-attr').textContent;
+
+  // Get first sentence of each philosopher description
+  const firstSentence = (text) => {
+    const match = text.match(/^[^.!?]+[.!?]/);
+    return match ? match[0] : text;
+  };
+
+  const cardHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#ffffff; font-family:'Lora',Georgia,serif; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:2rem; }
+.card { max-width:560px; width:100%; padding:3rem; border:1px solid #e0d8c8; }
+.line1 { font-size:1rem; color:#2d4260; line-height:1.65; margin-bottom:0.4rem; }
+.line2 { font-size:1rem; font-weight:500; color:#9a5c20; line-height:1.65; margin-bottom:1.6rem; }
+.concept-name { font-family:sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:#8a6a30; font-weight:700; margin-bottom:0.3rem; }
+.concept-gloss { font-size:0.88rem; color:#8a6a30; font-weight:600; line-height:1.7; margin-bottom:1.6rem; }
+.trad-label { font-family:sans-serif; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:#8a6a30; margin-bottom:0.3rem; }
+.phil-line { font-size:0.9rem; color:#2d4260; line-height:1.7; margin-bottom:1rem; }
+.bridge-line { font-size:0.9rem; color:#9a5c20; line-height:1.7; margin:0.8rem 0; font-style:normal; padding:0.7rem 1rem; background:#fdf6ee; border-left:3px solid #9a5c20; }
+.divider { display:flex; align-items:center; gap:1rem; margin:1.4rem 0; }
+.divider-line { flex:1; height:1px; background:#9a5c20; opacity:0.4; }
+.poem { font-size:0.92rem; font-style:italic; color:#2d4260; line-height:1.9; margin-bottom:0.5rem; white-space:pre-line; }
+.poem-attr { font-family:sans-serif; font-size:0.58rem; letter-spacing:0.15em; color:#9a8e7e; text-transform:uppercase; }
+.limn-tag { font-family:sans-serif; font-size:0.52rem; letter-spacing:0.3em; text-transform:uppercase; color:#c8b888; margin-top:1.8rem; text-align:right; }
+</style></head><body><div class="card">
+<div class="line1">${line1}</div>
+<div class="line2">${line2}</div>
+${concept ? `<div class="concept-name">${concept}</div><div class="concept-gloss">${gloss}</div>` : ''}
+<div class="trad-label">${primaryTrad}</div>
+<div class="phil-line">${firstSentence(primaryWho)}</div>
+<div class="bridge-line">${bridge}</div>
+<div class="trad-label">${mirrorTrad}</div>
+<div class="phil-line">${firstSentence(mirrorWho)}</div>
+<div class="divider"><div class="divider-line"></div><svg width="8" height="8" viewBox="0 0 10 10"><polygon points="5,0 6.5,3.5 10,5 6.5,6.5 5,10 3.5,6.5 0,5 3.5,3.5" fill="#9a5c20"/></svg><div class="divider-line"></div></div>
+<div class="poem">${poem}</div>
+<div class="poem-attr">${poemAttr}</div>
+<div class="limn-tag">Limn</div>
+</div></body></html>`;
+
+  const blob = new Blob([cardHtml], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+function openLightbox(art, why) {
+  const img = document.getElementById('art-lightbox-img');
+  img.src = art.url || '';
+  img.alt = art.title;
+  img.className = 'art-lightbox-img' + (art.orient === 'P' ? ' orient-portrait' : art.orient === 'S' ? ' orient-square' : '');
+  document.getElementById('art-lightbox-title').textContent = art.title;
+  document.getElementById('art-lightbox-artist').textContent = art.artist + ' · ' + art.tradition;
+  document.getElementById('art-lightbox-why').textContent = why;
+  document.getElementById('art-lightbox').classList.add('open');
+}
+function closeLightbox(e) {
+  if (e.target === document.getElementById('art-lightbox')) {
+    document.getElementById('art-lightbox').classList.remove('open');
+  }
+}
+function closeAbout(e){
+  if(e.target === document.getElementById('about-overlay')){
+    document.getElementById('about-overlay').classList.remove('open');
+  }
+}
+
+function goBack(){
+  const shareBtn = document.getElementById('share-btn'); if(shareBtn) shareBtn.style.display='none';
+  document.getElementById('response').style.display='none';
+  document.getElementById('input-section').style.display='block';
+  document.getElementById('journal-input').value='';
+  document.getElementById('poetry-block').classList.remove('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+  // Show share button after everything has loaded
+  setTimeout(() => {
+    const shareBtn = document.getElementById('share-btn');
+    if (shareBtn) shareBtn.style.display = 'block';
+  }, 3000);
+}
+
+function showError(msg){const el=document.getElementById('error-msg');el.textContent=msg;el.style.display='block';}
+function hideError(){document.getElementById('error-msg').style.display='none';}
+</script>
+</body>
+</html>
