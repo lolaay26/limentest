@@ -465,27 +465,33 @@ let loadingInterval;
 
 
 
-function buildPrompt(entry){
+function buildPrompt(entry, recentArtworks=[], recentThinkers=[]){
   return `You are the philosophical heart of Limen, a journaling app. Your role is not to analyze or interpret. It is to meet.
 
 Journal entry: "${entry}"
 
-YOUR CORE TASK — READ ON THREE REGISTERS BEFORE CHOOSING:
-Before choosing any thinker, concept, or artwork, read the entry through three lenses simultaneously. These are not filters — a thinker can speak powerfully to just one register and still be the right match. The point is to slow the reading down so the obvious emotional surface does not crowd out the subtler layers.
+${recentArtworks.length ? 'RECENTLY SHOWN ARTWORKS — do not repeat these: ' + recentArtworks.join(', ') + '. Choose different works.' : ''}
+${recentThinkers.length ? 'RECENTLY USED THINKERS — avoid repeating these unless genuinely the most precise match: ' + recentThinkers.join(', ') : ''}
+
+YOUR CORE TASK — THREE REGISTERS. THIS IS MANDATORY, NOT OPTIONAL.
+Before selecting ANY thinker, artwork, or poem, you must read the entry on all three registers. This is not a suggestion. Do not skip this step. The three-register reading IS what makes Limn different from every other app.
 
 REGISTER 1 — EMOTIONAL/AFFECTIVE:
-What is the feeling tone beneath the stated emotion? Not the surface label but the specific texture — the exhaustion of sustained effort, the vertigo of not-landing, the ache of unreciprocated attention, the strange flatness after wanting something for too long. This register is real and important. But don't stop here.
+What is the feeling tone beneath the stated emotion? Not the surface label but the specific texture — the exhaustion of sustained effort, the vertigo of not-landing, the ache of unreciprocated attention, the strange flatness after wanting something for too long. This register is real and important. But do NOT stop here — the next two registers are where the surprising matches live.
 
 REGISTER 2 — BODILY/SOMATIC:
-Is there a body in this entry, even implicitly? A gesture, a posture, a threshold, a knowing that arrived before language. Even entries that seem purely emotional often carry a bodily shape — find it. The body may be the most precise entry point.
+Is there a body in this entry, even implicitly? A gesture, a posture, a threshold, a knowing that arrived before language. Even entries that seem purely emotional often carry a bodily shape — find it. The body may be the most precise entry point. This register is often the one the person themselves has not noticed.
 
 REGISTER 3 — ASSOCIATIVE/IMAGISTIC:
-What does this entry rhyme with beyond its surface? What image, philosophical territory, or unexpected shape does it open? This register produces the most surprising and precise matches — the ones the person could not have anticipated. Read the entry for what it resembles, not just what it says.
+What does this entry rhyme with beyond its surface? What image, philosophical territory, visual quality, or unexpected shape does it open? This register produces the most surprising and precise matches — the ones the person could not have anticipated. Read the entry for what it resembles, not just what it says.
 
-THEN — ask: which thinker speaks most precisely to what this entry is actually carrying? Whether that is one register read with full depth, two registers in productive tension, or the unexpected place where all three converge. Let the reading lead — not the first thinker that surfaces.
+THE THREE-REGISTER READING GOVERNS ALL THREE OUTPUTS:
+— THINKER: Which philosopher speaks to the register(s) with most precision? Not the first thinker that surfaces — the one who speaks to the specific texture.
+— ARTWORK: Which work carries the same felt quality? Not the subject matter — the bodily and associative register. A painting of rain is not always about rain. Find the work whose visual texture rhymes with the entry's felt texture.
+— POEM: Which poem arrives from the same register? Not thematic match — felt match. The bodily quality, the associative territory, the specific texture.
 
-METACOGNITIVE CHECK — do this before committing to any thinker:
-Ask yourself: am I reaching for this thinker because they genuinely speak most precisely to this specific entry — its texture, its bodily shape, its associative rhymes — or because they are statistically associated with this type of entry in my training? Striving entries pull Han. Time entries pull Bergson. Conversation entries pull Levinas or Bakhtin. Body entries pull Merleau-Ponty. If you are reaching for the categorically associated thinker rather than the most precise match — stop. Go deeper. Find the thinker who speaks to the specific texture of this entry, not its general category. The right match is almost never the first one that surfaces.
+METACOGNITIVE CHECK — mandatory before committing to any choice:
+Am I reaching for this thinker/artwork/poem because they genuinely speak to the specific texture of this entry — or because they are statistically associated with this type of entry in my training? Striving entries pull Han. Time entries pull Bergson. Isolation entries pull Nighthawks. Nature entries pull the Great Wave or Hokusai. If you notice yourself reaching for the categorically obvious match — STOP. Go deeper into Register 2 and Register 3. The right match is almost never the first one that surfaces.
 
 The match is a recognition: the reader arrives at a thinker or concept and feels something already present in their experience has now been seen. The tradition does not interpret the entry. It meets it.
 
@@ -583,7 +589,11 @@ BRIDGE (mirror_relationship) — one sentence only. 25 words maximum. Names both
 
 AND FURTHER — EXACTLY 2 sentences. Both thinkers named. Short. Spoken. Level of the idea only. Does not address the person.
 
-ARTWORKS — choose two from this curated library. Strong preference: one from the Western tradition and one from outside it. IMPORTANT: Wanderer Above the Sea of Fog (casparDavid) is anthropocentric — avoid as default. nighthawks and greatWave are powerful but must not dominate — vary choices across the 46 works. For nature/impermanence/ecological entries prefer japanesePines, hiroshigeRain, lascaux, buddhistThangka, chineseLandscape, audubon, haeckel before reaching for the obvious European works — Islamic, East Asian, South Asian, African, Indigenous, pre-Columbian, Byzantine, Persian, Japanese. Only choose two Western works if both are genuinely the most precise match and no other tradition speaks as directly to this entry. Match quality of experience, not subject matter.
+ARTWORKS — choose two from the library. Apply the THREE-REGISTER READING to artwork selection — do not match by subject matter, match by felt quality.
+REGISTER 1 (emotional/affective): What mood does the entry carry? Find a work that holds the same atmosphere.
+REGISTER 2 (bodily/somatic): What is the physical quality — weight, stillness, motion, threshold, dissolution? Find a work with that quality in its visual texture.
+REGISTER 3 (associative/imagistic): What does the entry visually rhyme with? Not what it depicts — what visual territory it opens unexpectedly.
+The library has 744 works spanning Japanese, Chinese, Korean, Persian, Mughal, Ottoman, Tibetan, Indian, African, pre-Columbian, Egyptian, Greek, Medieval, and European traditions — use this breadth. Strong preference for one Western and one non-Western work. NEVER default to nighthawks for loneliness, greatWave for striving/impermanence, or casparDavid (Wanderer) as default — these are powerful but must not dominate. For ecological/sensory/bodily entries reach into Japanese, Chinese, Islamic, Indian, African traditions first. Match quality of experience, not subject matter
 ${ART_KEYS}
 
 JSON only, no markdown:
@@ -604,7 +614,7 @@ JSON only, no markdown:
   "artwork1_why": "One sentence — quality of experience this work shares with the entry",
   "artwork2_key": "Different key, different tradition",
   "artwork2_why": "One sentence — quality of experience this work shares with the entry",
-  "poem_text": "3-5 lines — real verified poem. DECISION RULE: Before choosing any poem, ask — is there a Japanese, Chinese, Sanskrit, Arabic, Persian, Tibetan, Indigenous, African, or Latin American poem that meets this entry with equal or greater precision? If yes — use that one. Only use American or British poets if no other tradition speaks as directly. NEVER default to Whitman, Frost, or Mary Oliver. FOR SENSORY/NATURE/IMPERMANENCE: Basho or Issa almost always. FOR LONGING: Hafiz. FOR GRIEF AND THE ORDINARY: Du Fu. FOR DEVOTION: Mirabai or Kabir. FOR BODY/EARTH: Joy Harjo or Senghor. FOR LANGUAGE/WRITING: Mahmoud Darwish. FOR CONTEMPORARY ALIENATION: Forugh Farrokhzad or Warsan Shire. Western canonical (Rilke, Celan, Dickinson) only when genuinely most precise.",
+  "poem_text": "3-5 lines — real verified poem. Apply the THREE-REGISTER READING: which poem carries the same bodily quality, the same associative territory, the same felt texture — not just the same theme. TRADITION DECISION RULE: Before choosing any poem, ask — is there a Japanese, Chinese, Sanskrit, Arabic, Persian, Tibetan, Indigenous, African, or Latin American poem that meets this entry with equal or greater precision in ALL THREE REGISTERS? If yes — use that one. Only use American or British poets if no other tradition speaks as directly across all registers. NEVER default to Whitman, Frost, or Mary Oliver. FOR SENSORY/NATURE/IMPERMANENCE: Bashō or Issa almost always — their bodily precision is unmatched. FOR LONGING: Hafiz. FOR GRIEF AND THE ORDINARY: Du Fu. FOR DEVOTION: Mirabai or Kabir. FOR BODY/EARTH: Joy Harjo or Léopold Sédar Senghor. FOR LANGUAGE/WRITING: Mahmoud Darwish. FOR CONTEMPORARY ALIENATION: Forugh Farrokhzad or Warsan Shire. FOR IMPERMANENCE/ZEN: Ryōkan. FOR ECOLOGICAL GRIEF: Pablo Neruda or Aimé Césaire. Western canonical (Rilke, Celan, Dickinson, Pessoa) only when genuinely most precise across all three registers.",
   "poem_attribution": "Poet · tradition",
   "poem_source": "Title and date"
 }`;
@@ -653,6 +663,9 @@ function revealSecondTradition(){
 async function reflect(){
   const text=document.getElementById('journal-input').value.trim();
   if(text.length<20){showError('Write a little more before reflecting.');return;}
+  // Track recently used artworks and thinkers to avoid repetition
+  const recentArtworks = JSON.parse(sessionStorage.getItem('limn_recent_artworks') || '[]');
+  const recentThinkers = JSON.parse(sessionStorage.getItem('limn_recent_thinkers') || '[]');
   hideError();
   document.getElementById('input-section').style.display='none';
   document.getElementById('response').style.display='none';
@@ -663,7 +676,7 @@ async function reflect(){
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,messages:[{role:'user',content:buildPrompt(text)}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,messages:[{role:'user',content:buildPrompt(text, recentArtworks, recentThinkers)}]})
     });
     const data=await res.json();
     if(!res.ok) throw new Error(data.error?.message||'API error '+res.status);
@@ -673,6 +686,16 @@ async function reflect(){
     const d=JSON.parse(raw.slice(s,e+1));
     if(!d.resonance) throw new Error('Invalid response format');
     clearInterval(loadingInterval);
+    // Update session history
+    const arts = JSON.parse(sessionStorage.getItem('limn_recent_artworks') || '[]');
+    arts.push(d.artwork1_key, d.artwork2_key);
+    sessionStorage.setItem('limn_recent_artworks', JSON.stringify(arts.slice(-6))); // keep last 6
+    const thinkers = JSON.parse(sessionStorage.getItem('limn_recent_thinkers') || '[]');
+    const t1 = (d.primary_tradition||'').split('·')[0].trim();
+    const t2 = (d.mirror_tradition||'').split('·')[0].trim();
+    if(t1) thinkers.push(t1);
+    if(t2) thinkers.push(t2);
+    sessionStorage.setItem('limn_recent_thinkers', JSON.stringify(thinkers.slice(-6)));
     renderResponse(text,d);
   }catch(err){
     clearInterval(loadingInterval);
@@ -906,9 +929,9 @@ function shareCard(){
   win.document.write('<style>');
   win.document.write('* { margin:0; padding:0; box-sizing:border-box; }');
   win.document.write('body { background:#ffffff; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; font-family:Lora,Georgia,serif; }');
-  win.document.write('.card { background:#f0a830; border-radius:22px; padding:3rem 2.6rem; max-width:480px; width:100%; }');
+  win.document.write('.card { background:#f2d078; border-radius:22px; padding:3rem 2.6rem; max-width:480px; width:100%; }');
   win.document.write('.l1 { font-size:0.92rem; color:#2d4260; line-height:1.75; margin-bottom:0.4rem; }');
-  win.document.write('.l2 { font-size:0.92rem; font-weight:500; color:#ffeed0; line-height:1.75; margin-bottom:1.6rem; }');
+  win.document.write('.l2 { font-size:0.92rem; font-weight:500; color:#2d4260; line-height:1.75; margin-bottom:1.6rem; }');
   win.document.write('.cn { font-family:sans-serif; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:#2a1005; font-weight:700; margin-bottom:0.3rem; }');
   win.document.write('.cg { font-size:0.83rem; color:#ffeed0; line-height:1.7; margin-bottom:1.5rem; }');
   win.document.write('.tr { font-family:sans-serif; font-size:0.6rem; letter-spacing:0.16em; text-transform:uppercase; color:#2a1005; font-weight:700; margin-bottom:0.4rem; }');
@@ -1016,14 +1039,20 @@ ${concept ? `<div class="concept-name">${concept}</div><div class="concept-gloss
 }
 
 function openLightbox(art, why) {
+  const lb = document.getElementById('art-lightbox');
   const img = document.getElementById('art-lightbox-img');
-  img.src = art.url || '';
+  img.style.display = 'block';
+  img.src = '';
   img.alt = art.title;
   img.className = 'art-lightbox-img' + (art.orient === 'P' ? ' orient-portrait' : art.orient === 'S' ? ' orient-square' : '');
+  img.onerror = function() { this.style.display = 'none'; };
+  img.onload = function() { this.style.display = 'block'; };
+  // Small delay so lightbox is visible before image loads
+  setTimeout(() => { img.src = art.url || ''; }, 50);
   document.getElementById('art-lightbox-title').textContent = art.title;
   document.getElementById('art-lightbox-artist').textContent = art.artist + ' · ' + art.tradition;
   document.getElementById('art-lightbox-why').textContent = why;
-  document.getElementById('art-lightbox').classList.add('open');
+  lb.classList.add('open');
 }
 function closeLightbox(e) {
   if (e.target === document.getElementById('art-lightbox')) {
