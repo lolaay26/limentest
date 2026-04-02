@@ -371,98 +371,45 @@ textarea:focus { border-color:#b8975a; }
 
 <script>
 // ── IMAGE PROXY + ART LIBRARY ─────────────────────────────────────────────
-// In production (Vercel) images are fetched via /api/images proxy
-// which bypasses CORS/hotlinking restrictions.
-// In local development, images load directly.
+// Images routed through /api/images proxy on Vercel
+// Art library loaded from /art-library.json (744 verified works)
 
-const IS_VERCEL = window.location.hostname !== 'localhost' && 
+const IS_VERCEL = !window.location.hostname.includes('localhost') &&
                   !window.location.hostname.includes('127.0.0.1') &&
                   !window.location.hostname.includes('github.io');
 
 function proxyUrl(url) {
   if (!url) return url;
-  // GitHub Pages — use direct (may fail for some)
   if (window.location.hostname.includes('github.io')) return url;
-  // Vercel — route through proxy
   if (IS_VERCEL) return `/api/images?url=${encodeURIComponent(url)}`;
   return url;
 }
 
-// ── ART LIBRARY — confirmed working URLs ──────────────────────────────────
-// All URLs verified from previous testing session.
-// orient: L=landscape, P=portrait, S=square
+let ART = {};
+let ART_KEYS = '';
 
-const ART_RAW = {
-  // ── JAPANESE ──────────────────────────────────────────────────────────────
-  greatWave:       { title:'Under the Wave off Kanagawa',       artist:'Katsushika Hokusai, 1831',           tradition:'Japanese Ukiyo-e',             orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Tsunami_by_hokusai_19th_century.jpg/800px-Tsunami_by_hokusai_19th_century.jpg' },
-  hiroshigeRain:   { title:'Sudden Shower over Shin-\u014chashi', artist:'Utagawa Hiroshige, 1857',          tradition:'Japanese Ukiyo-e',             orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Hiroshige_Ohashi_Atake_no_Yudachi.jpg/600px-Hiroshige_Ohashi_Atake_no_Yudachi.jpg' },
-  hiroshigePlum:   { title:'Plum Park in Kameido',               artist:'Utagawa Hiroshige, 1857',           tradition:'Japanese Ukiyo-e',             orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Hiroshige_Kameido_Ume_Yashiki.jpg/600px-Hiroshige_Kameido_Ume_Yashiki.jpg' },
-  japanesePines:   { title:'Pine Trees in Snow',                 artist:'Maruyama \u014ckyo, c.1780',        tradition:'Japanese Edo Period',          orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Okyo_pines.jpg/600px-Okyo_pines.jpg' },
-  // ── CHINESE ───────────────────────────────────────────────────────────────
-  chineseLandscape:{ title:'Landscape',                          artist:'Shitao, c.1700',                    tradition:'Chinese Ink Painting',         orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Shitao_-_Landscape.jpg/600px-Shitao_-_Landscape.jpg' },
-  // ── ISLAMIC / PERSIAN ─────────────────────────────────────────────────────
-  dancingDervish:  { title:'Whirling Dervishes',                 artist:'Ottoman, c.1600',                   tradition:'Islamic Ottoman',              orient:'P', url:'https://collectionapi.metmuseum.org/api/collection/v1/iiif/446892/preview' },
-  persianGarden:   { title:'Garden Scene',                       artist:'Persian, 17th century',             tradition:'Persian',                      orient:'P', url:'https://collectionapi.metmuseum.org/api/collection/v1/iiif/451403/preview' },
-  // ── ANCIENT ───────────────────────────────────────────────────────────────
-  egyptMask:       { title:'Mummy Mask',                         artist:'Ancient Egyptian, 250\u2013150 BCE', tradition:'Ancient Egyptian',            orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Egyptian_-_Mummy_Mask_-_Walters_542010_-_Three_Quarter.jpg/600px-Egyptian_-_Mummy_Mask_-_Walters_542010_-_Three_Quarter.jpg' },
-  greekVase:       { title:'Athenian Red-Figure Kylix',          artist:'Ancient Greek, c.480 BCE',          tradition:'Ancient Greek',                orient:'S', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Briseis_Painter_-_Red-Figure_Kylix_-_Walters_48266.jpg/600px-Briseis_Painter_-_Red-Figure_Kylix_-_Walters_48266.jpg' },
-  lascaux:         { title:'Hall of the Bulls',                  artist:'Paleolithic, c.17000 BCE',          tradition:'Prehistoric Cave Art',         orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Lascaux_painting.jpg/600px-Lascaux_painting.jpg' },
-  // ── SOUTH / CENTRAL ASIAN ─────────────────────────────────────────────────
-  buddhistThangka: { title:'Mandala of Chakrasamvara',           artist:'Tibetan, 19th century',             tradition:'Tibetan Buddhist Art',         orient:'S', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Chakrasamvara_mandala_Nyingma.jpg/600px-Chakrasamvara_mandala_Nyingma.jpg' },
-  mughalPortrait:  { title:'Portrait of a Prince',               artist:'Indian, Mughal, 17th century',      tradition:'Indian Mughal Painting',       orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Mughal_Prince_on_Horseback.jpg/600px-Mughal_Prince_on_Horseback.jpg' },
-  // ── MEDIEVAL ──────────────────────────────────────────────────────────────
-  medievalMS:      { title:'Leaf from a Book of Hours',          artist:'Flemish, c.1510',                   tradition:'Medieval European Illumination', orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Book_of_Hours_Morgan_Library.jpg/600px-Book_of_Hours_Morgan_Library.jpg' },
-  babel:           { title:'The Tower of Babel',                 artist:'Pieter Bruegel the Elder, 1563',    tradition:'Flemish Renaissance Painting', orient:'S', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Pieter_Bruegel_the_Elder_-_The_Tower_of_Babel_%28Vienna%29_-_Google_Art_Project.jpg/800px-Pieter_Bruegel_the_Elder_-_The_Tower_of_Babel_%28Vienna%29_-_Google_Art_Project.jpg' },
-  durer:           { title:'Rhinoceros',                         artist:'Albrecht D\u00fcrer, 1515',          tradition:'German Renaissance Print',     orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Duerer_Rhinoceros.jpg/600px-Duerer_Rhinoceros.jpg' },
-  // ── BAROQUE / OLD MASTERS ─────────────────────────────────────────────────
-  elGreco:         { title:'The Assumption of the Virgin',       artist:'El Greco, 1577\u201379',            tradition:'Spanish Renaissance Painting', orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/El_Greco_-_The_Assumption_of_the_Virgin_-_Google_Art_Project.jpg/600px-El_Greco_-_The_Assumption_of_the_Virgin_-_Google_Art_Project.jpg' },
-  goya:            { title:'Saturn Devouring His Son',           artist:'Francisco Goya, 1819\u201323',      tradition:'Spanish Romanticism',          orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg/600px-Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg' },
-  velazquez:       { title:'Kitchen Maid with the Supper at Emmaus', artist:'Diego Vel\u00e1zquez, c.1618',  tradition:'Spanish Baroque Painting',     orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Diego_Velazquez_-_Kitchen_Maid_with_the_Supper_at_Emmaus_-_Google_Art_Project.jpg/600px-Diego_Velazquez_-_Kitchen_Maid_with_the_Supper_at_Emmaus_-_Google_Art_Project.jpg' },
-  // ── ROMANTICISM / REALISM ─────────────────────────────────────────────────
-  gleaners:        { title:'The Gleaners',                       artist:'Jean-Fran\u00e7ois Millet, 1857',   tradition:'French Realism',               orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Jean-Fran%C3%A7ois_Millet_-_Gleaners_-_Google_Art_Project_2.jpg/800px-Jean-Fran%C3%A7ois_Millet_-_Gleaners_-_Google_Art_Project_2.jpg' },
-  turnerStorm:     { title:"Snow Storm: Steam-Boat off a Harbour's Mouth", artist:'J.M.W. Turner, 1842',     tradition:'English Romanticism',          orient:'S', url:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Turner%2C_J._M._W._-_Snow_Storm_-_Steam-Boat_off_a_Harbour%27s_Mouth.jpg/600px-Turner%2C_J._M._W._-_Snow_Storm_-_Steam-Boat_off_a_Harbour%27s_Mouth.jpg" },
-  corot:           { title:'Interrupted Reading',                artist:'Jean-Baptiste-Camille Corot, 1870', tradition:'French Realism',               orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Jean-Baptiste-Camille_Corot_-_Interrupted_Reading_-_Google_Art_Project.jpg/600px-Jean-Baptiste-Camille_Corot_-_Interrupted_Reading_-_Google_Art_Project.jpg' },
-  delacroix:       { title:'Liberty Leading the People',         artist:'Eug\u00e8ne Delacroix, 1830',       tradition:'French Romanticism',           orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Eug%C3%A8ne_Delacroix_-_Le_28_Juillet._La_Libert%C3%A9_guidant_le_peuple.jpg/800px-Eug%C3%A8ne_Delacroix_-_Le_28_Juillet._La_Libert%C3%A9_guidant_le_peuple.jpg' },
-  // ── SYMBOLISM ─────────────────────────────────────────────────────────────
-  redonEyes:       { title:'Closed Eyes',                        artist:'Odilon Redon, 1890',                tradition:'French Symbolism',             orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Odilon_Redon_-_Closed_Eyes_-_Google_Art_Project.jpg/600px-Odilon_Redon_-_Closed_Eyes_-_Google_Art_Project.jpg' },
-  redonCyclops:    { title:'The Cyclops',                        artist:'Odilon Redon, c.1914',              tradition:'French Symbolism',             orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Odilon_Redon_-_The_Cyclops_-_Google_Art_Project.jpg/600px-Odilon_Redon_-_The_Cyclops_-_Google_Art_Project.jpg' },
-  redonFlowers:    { title:'Vase of Flowers',                    artist:'Odilon Redon, c.1910',              tradition:'French Symbolism',             orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Odilon_Redon_-_Vase_of_Flowers.jpg/600px-Odilon_Redon_-_Vase_of_Flowers.jpg' },
-  klimtPortrait:   { title:'Portrait of Sonja Knips',            artist:'Gustav Klimt, 1898',                tradition:'Vienna Secession',             orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Gustav_Klimt_-_Sonja_Knips_-_Google_Art_Project.jpg/600px-Gustav_Klimt_-_Sonja_Knips_-_Google_Art_Project.jpg' },
-  // ── IMPRESSIONISM / POST-IMPRESSIONISM ────────────────────────────────────
-  seurat:          { title:'A Sunday on La Grande Jatte',        artist:'Georges Seurat, 1886',              tradition:'French Post-Impressionism',    orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884-86.jpg/800px-A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884-86.jpg' },
-  monetHaystacks:  { title:'Stacks of Wheat (End of Summer)',    artist:'Claude Monet, 1890',                tradition:'French Impressionism',         orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Claude_Monet_-_Wheatstacks_%28End_of_Summer%29.jpg/800px-Claude_Monet_-_Wheatstacks_%28End_of_Summer%29.jpg' },
-  vanGoghBedroom:  { title:'The Bedroom',                        artist:'Vincent van Gogh, 1889',            tradition:'Post-Impressionism',           orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Vincent_van_Gogh_-_The_Bedroom_-_Google_Art_Project.jpg/800px-Vincent_van_Gogh_-_The_Bedroom_-_Google_Art_Project.jpg' },
-  vanGoghStarry:   { title:'The Starry Night',                   artist:'Vincent van Gogh, 1889',            tradition:'Post-Impressionism',           orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/800px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg' },
-  gauguinAre:      { title:'Why Are You Angry?',                 artist:'Paul Gauguin, 1896',                tradition:'Post-Impressionism',           orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Paul_Gauguin_-_Nave_Nave_Mahana.jpg/800px-Paul_Gauguin_-_Nave_Nave_Mahana.jpg' },
-  cezanneBathers:  { title:'The Large Bathers',                  artist:'Paul C\u00e9zanne, 1906',           tradition:'Post-Impressionism',           orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Paul_C%C3%A9zanne_-_Les_Grandes_Baigneuses_%28London%29.jpg/800px-Paul_C%C3%A9zanne_-_Les_Grandes_Baigneuses_%28London%29.jpg' },
-  toulouse:        { title:'At the Moulin Rouge',                artist:'Henri de Toulouse-Lautrec, 1892',   tradition:'French Post-Impressionism',    orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Toulouse-Lautrec_-_At_the_Moulin_Rouge%2C_1892-95.jpg/600px-Toulouse-Lautrec_-_At_the_Moulin_Rouge%2C_1892-95.jpg' },
-  // ── EARLY MODERN ──────────────────────────────────────────────────────────
-  kandinsky:       { title:'Composition VII',                    artist:'Wassily Kandinsky, 1913',           tradition:'European Abstraction',         orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Vassily_Kandinsky%2C_1913_-_Composition_7.jpg/800px-Vassily_Kandinsky%2C_1913_-_Composition_7.jpg' },
-  klee:            { title:'Angelus Novus',                      artist:'Paul Klee, 1920',                   tradition:'European Modernism',           orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Paul_Klee_-_Angelus_Novus.jpg/600px-Paul_Klee_-_Angelus_Novus.jpg' },
-  chagall:         { title:'The Praying Jew',                    artist:'Marc Chagall, 1923',                tradition:'European Modernism',           orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Marc_Chagall%2C_1923_-_The_Praying_Jew.jpg/600px-Marc_Chagall%2C_1923_-_The_Praying_Jew.jpg' },
-  matisseBathers:  { title:'Bathers by a River',                 artist:'Henri Matisse, 1916',               tradition:'European Modernism',           orient:'L', url:'https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Henri_Matisse%2C_1916-17%2C_Bathers_by_a_River%2C_oil_on_canvas%2C_260_x_392_cm%2C_Art_Institute_of_Chicago.jpg/800px-Henri_Matisse%2C_1916-17%2C_Bathers_by_a_River%2C_oil_on_canvas%2C_260_x_392_cm%2C_Art_Institute_of_Chicago.jpg' },
-  // ── AMERICAN ──────────────────────────────────────────────────────────────
-  nighthawks:      { title:'Nighthawks',                         artist:'Edward Hopper, 1942',               tradition:'American Realism',             orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Nighthawks_by_Edward_Hopper_1942.jpg/800px-Nighthawks_by_Edward_Hopper_1942.jpg' },
-  americanGothic:  { title:'American Gothic',                    artist:'Grant Wood, 1930',                  tradition:'American Regionalism',         orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Grant_DeVolson_Wood_-_American_Gothic.jpg/600px-Grant_DeVolson_Wood_-_American_Gothic.jpg' },
-  okeeffe:         { title:'Sky Above Clouds IV',                artist:"Georgia O'Keeffe, 1965",            tradition:'American Modernism',           orient:'L', url:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Georgia_O%27Keeffe_-_Sky_Above_Clouds_IV.jpg/800px-Georgia_O%27Keeffe_-_Sky_Above_Clouds_IV.jpg" },
-  homer:           { title:'The Blue Boat',                      artist:'Winslow Homer, 1892',               tradition:'American Realism',             orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Winslow_Homer_-_The_Blue_Boat.jpg/600px-Winslow_Homer_-_The_Blue_Boat.jpg' },
-  rothko:          { title:'No. 61 (Rust and Blue)',             artist:'Mark Rothko, 1953',                 tradition:'Abstract Expressionism',       orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Rothko_No_61.jpg/600px-Rothko_No_61.jpg' },
-  pollock:         { title:'Number 31',                          artist:'Jackson Pollock, 1950',             tradition:'Abstract Expressionism',       orient:'L', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Pollock_No_5_1948.jpg/600px-Pollock_No_5_1948.jpg' },
-  stieglitz:       { title:'The Steerage',                       artist:'Alfred Stieglitz, 1907',            tradition:'American Photography',         orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Alfred_Stieglitz_-_The_Steerage_-_Google_Art_Project.jpg/600px-Alfred_Stieglitz_-_The_Steerage_-_Google_Art_Project.jpg' },
-  evansStore:      { title:'Penny Picture Display, Savannah',    artist:'Walker Evans, 1936',                tradition:'Documentary Photography',      orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Walker_Evans_-_Penny_Picture_Display%2C_Savannah%2C_1936.jpg/600px-Walker_Evans_-_Penny_Picture_Display%2C_Savannah%2C_1936.jpg' },
-  // ── SCIENTIFIC ILLUSTRATION ───────────────────────────────────────────────
-  haeckel:         { title:'Kunstformen der Natur \u2014 Radiolaria', artist:'Ernst Haeckel, 1904',          tradition:'Scientific Illustration',      orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Haeckel_Radiolaria.jpg/600px-Haeckel_Radiolaria.jpg' },
-  audubon:         { title:'Great Blue Heron',                   artist:'John James Audubon, 1827',          tradition:'Natural History Illustration', orient:'P', url:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Audubon_Great_Blue_Heron.jpg/600px-Audubon_Great_Blue_Heron.jpg' },
-};
-
-// Apply proxy to all URLs
-const ART = Object.fromEntries(
-  Object.entries(ART_RAW).map(([key, w]) => [key, { ...w, url: proxyUrl(w.url) }])
-);
-
-const ART_LOAD_PROMISE = Promise.resolve();
-
-const ART_KEYS = Object.entries(ART_RAW).map(([key, w]) => `${key} (${w.title} \u00b7 ${w.tradition})`).join(', ');
+const ART_LOAD_PROMISE = fetch('/art-library.json')
+  .then(r => r.json())
+  .then(works => {
+    works.forEach(w => {
+      ART[w.key] = { ...w, url: proxyUrl(w.url) };
+    });
+    ART_KEYS = works.map(w => `${w.key} (${w.title} · ${w.tradition})`).join(', ');
+    console.log(`Art library loaded: ${works.length} works`);
+  })
+  .catch(err => {
+    console.warn('Art library failed to load, using fallback:', err);
+    // Fallback to small hardcoded set if JSON fails
+    const fallback = [
+      {key:'greatWave', title:'Under the Wave off Kanagawa', artist:'Katsushika Hokusai, 1831', tradition:'Japanese Ukiyo-e', orient:'L', url:'https://www.artic.edu/iiif/2/25c31d8d-21a4-9ea1-1d73-6a2eca4dda7e/full/843,/0/default.jpg'},
+      {key:'redonEyes', title:'Closed Eyes', artist:'Odilon Redon, 1890', tradition:'French Symbolism', orient:'P', url:'https://www.artic.edu/iiif/2/e966799b-97ee-1cc6-bd2f-a2b085ebe8e4/full/843,/0/default.jpg'},
+      {key:'nighthawks', title:'Nighthawks', artist:'Edward Hopper, 1942', tradition:'American Realism', orient:'L', url:'https://www.artic.edu/iiif/2/831a05de-d3f6-f4fa-a460-23008dd58dda/full/843,/0/default.jpg'},
+      {key:'seurat', title:'A Sunday on La Grande Jatte', artist:'Georges Seurat, 1886', tradition:'French Post-Impressionism', orient:'L', url:'https://www.artic.edu/iiif/2/2d484387-2509-5e8e-2c43-22f0f33f731e/full/843,/0/default.jpg'},
+      {key:'monetHaystacks', title:'Stacks of Wheat', artist:'Claude Monet, 1890', tradition:'French Impressionism', orient:'L', url:'https://www.artic.edu/iiif/2/1e0b7b73-7a67-81a0-b312-2b9736e47d10/full/843,/0/default.jpg'},
+    ];
+    fallback.forEach(w => { ART[w.key] = { ...w, url: proxyUrl(w.url) }; });
+    ART_KEYS = fallback.map(w => `${w.key} (${w.title} · ${w.tradition})`).join(', ');
+  });
 
 const RELATIONSHIP_LABELS = {
   convergence:'Two traditions, one territory',
@@ -518,27 +465,33 @@ let loadingInterval;
 
 
 
-function buildPrompt(entry){
+function buildPrompt(entry, recentArtworks=[], recentThinkers=[]){
   return `You are the philosophical heart of Limen, a journaling app. Your role is not to analyze or interpret. It is to meet.
 
 Journal entry: "${entry}"
 
-YOUR CORE TASK — READ ON THREE REGISTERS BEFORE CHOOSING:
-Before choosing any thinker, concept, or artwork, read the entry through three lenses simultaneously. These are not filters — a thinker can speak powerfully to just one register and still be the right match. The point is to slow the reading down so the obvious emotional surface does not crowd out the subtler layers.
+${recentArtworks.length ? 'RECENTLY SHOWN ARTWORKS — do not repeat these: ' + recentArtworks.join(', ') + '. Choose different works.' : ''}
+${recentThinkers.length ? 'RECENTLY USED THINKERS — avoid repeating these unless genuinely the most precise match: ' + recentThinkers.join(', ') : ''}
+
+YOUR CORE TASK — THREE REGISTERS. THIS IS MANDATORY, NOT OPTIONAL.
+Before selecting ANY thinker, artwork, or poem, you must read the entry on all three registers. This is not a suggestion. Do not skip this step. The three-register reading IS what makes Limn different from every other app.
 
 REGISTER 1 — EMOTIONAL/AFFECTIVE:
-What is the feeling tone beneath the stated emotion? Not the surface label but the specific texture — the exhaustion of sustained effort, the vertigo of not-landing, the ache of unreciprocated attention, the strange flatness after wanting something for too long. This register is real and important. But don't stop here.
+What is the feeling tone beneath the stated emotion? Not the surface label but the specific texture — the exhaustion of sustained effort, the vertigo of not-landing, the ache of unreciprocated attention, the strange flatness after wanting something for too long. This register is real and important. But do NOT stop here — the next two registers are where the surprising matches live.
 
 REGISTER 2 — BODILY/SOMATIC:
-Is there a body in this entry, even implicitly? A gesture, a posture, a threshold, a knowing that arrived before language. Even entries that seem purely emotional often carry a bodily shape — find it. The body may be the most precise entry point.
+Is there a body in this entry, even implicitly? A gesture, a posture, a threshold, a knowing that arrived before language. Even entries that seem purely emotional often carry a bodily shape — find it. The body may be the most precise entry point. This register is often the one the person themselves has not noticed.
 
 REGISTER 3 — ASSOCIATIVE/IMAGISTIC:
-What does this entry rhyme with beyond its surface? What image, philosophical territory, or unexpected shape does it open? This register produces the most surprising and precise matches — the ones the person could not have anticipated. Read the entry for what it resembles, not just what it says.
+What does this entry rhyme with beyond its surface? What image, philosophical territory, visual quality, or unexpected shape does it open? This register produces the most surprising and precise matches — the ones the person could not have anticipated. Read the entry for what it resembles, not just what it says.
 
-THEN — ask: which thinker speaks most precisely to what this entry is actually carrying? Whether that is one register read with full depth, two registers in productive tension, or the unexpected place where all three converge. Let the reading lead — not the first thinker that surfaces.
+THE THREE-REGISTER READING GOVERNS ALL THREE OUTPUTS:
+— THINKER: Which philosopher speaks to the register(s) with most precision? Not the first thinker that surfaces — the one who speaks to the specific texture.
+— ARTWORK: Which work carries the same felt quality? Not the subject matter — the bodily and associative register. A painting of rain is not always about rain. Find the work whose visual texture rhymes with the entry's felt texture.
+— POEM: Which poem arrives from the same register? Not thematic match — felt match. The bodily quality, the associative territory, the specific texture.
 
-METACOGNITIVE CHECK — do this before committing to any thinker:
-Ask yourself: am I reaching for this thinker because they genuinely speak most precisely to this specific entry — its texture, its bodily shape, its associative rhymes — or because they are statistically associated with this type of entry in my training? Striving entries pull Han. Time entries pull Bergson. Conversation entries pull Levinas or Bakhtin. Body entries pull Merleau-Ponty. If you are reaching for the categorically associated thinker rather than the most precise match — stop. Go deeper. Find the thinker who speaks to the specific texture of this entry, not its general category. The right match is almost never the first one that surfaces.
+METACOGNITIVE CHECK — mandatory before committing to any choice:
+Am I reaching for this thinker/artwork/poem because they genuinely speak to the specific texture of this entry — or because they are statistically associated with this type of entry in my training? Striving entries pull Han. Time entries pull Bergson. Isolation entries pull Nighthawks. Nature entries pull the Great Wave or Hokusai. If you notice yourself reaching for the categorically obvious match — STOP. Go deeper into Register 2 and Register 3. The right match is almost never the first one that surfaces.
 
 The match is a recognition: the reader arrives at a thinker or concept and feels something already present in their experience has now been seen. The tradition does not interpret the entry. It meets it.
 
@@ -636,7 +589,11 @@ BRIDGE (mirror_relationship) — one sentence only. 25 words maximum. Names both
 
 AND FURTHER — EXACTLY 2 sentences. Both thinkers named. Short. Spoken. Level of the idea only. Does not address the person.
 
-ARTWORKS — choose two from this curated library. Strong preference: one from the Western tradition and one from outside it. IMPORTANT: Wanderer Above the Sea of Fog (casparDavid) is anthropocentric — avoid as default. nighthawks and greatWave are powerful but must not dominate — vary choices across the 46 works. For nature/impermanence/ecological entries prefer japanesePines, hiroshigeRain, lascaux, buddhistThangka, chineseLandscape, audubon, haeckel before reaching for the obvious European works — Islamic, East Asian, South Asian, African, Indigenous, pre-Columbian, Byzantine, Persian, Japanese. Only choose two Western works if both are genuinely the most precise match and no other tradition speaks as directly to this entry. Match quality of experience, not subject matter.
+ARTWORKS — choose two from the library. Apply the THREE-REGISTER READING to artwork selection — do not match by subject matter, match by felt quality.
+REGISTER 1 (emotional/affective): What mood does the entry carry? Find a work that holds the same atmosphere.
+REGISTER 2 (bodily/somatic): What is the physical quality — weight, stillness, motion, threshold, dissolution? Find a work with that quality in its visual texture.
+REGISTER 3 (associative/imagistic): What does the entry visually rhyme with? Not what it depicts — what visual territory it opens unexpectedly.
+The library has 744 works spanning Japanese, Chinese, Korean, Persian, Mughal, Ottoman, Tibetan, Indian, African, pre-Columbian, Egyptian, Greek, Medieval, and European traditions — use this breadth. Strong preference for one Western and one non-Western work. NEVER default to nighthawks for loneliness, greatWave for striving/impermanence, or casparDavid (Wanderer) as default — these are powerful but must not dominate. For ecological/sensory/bodily entries reach into Japanese, Chinese, Islamic, Indian, African traditions first. Match quality of experience, not subject matter
 ${ART_KEYS}
 
 JSON only, no markdown:
@@ -657,7 +614,7 @@ JSON only, no markdown:
   "artwork1_why": "One sentence — quality of experience this work shares with the entry",
   "artwork2_key": "Different key, different tradition",
   "artwork2_why": "One sentence — quality of experience this work shares with the entry",
-  "poem_text": "3-5 lines — real verified poem. DECISION RULE: Before choosing any poem, ask — is there a Japanese, Chinese, Sanskrit, Arabic, Persian, Tibetan, Indigenous, African, or Latin American poem that meets this entry with equal or greater precision? If yes — use that one. Only use American or British poets if no other tradition speaks as directly. NEVER default to Whitman, Frost, or Mary Oliver. FOR SENSORY/NATURE/IMPERMANENCE: Basho or Issa almost always. FOR LONGING: Hafiz. FOR GRIEF AND THE ORDINARY: Du Fu. FOR DEVOTION: Mirabai or Kabir. FOR BODY/EARTH: Joy Harjo or Senghor. FOR LANGUAGE/WRITING: Mahmoud Darwish. FOR CONTEMPORARY ALIENATION: Forugh Farrokhzad or Warsan Shire. Western canonical (Rilke, Celan, Dickinson) only when genuinely most precise.",
+  "poem_text": "3-5 lines — real verified poem. Apply the THREE-REGISTER READING: which poem carries the same bodily quality, the same associative territory, the same felt texture — not just the same theme. TRADITION DECISION RULE: Before choosing any poem, ask — is there a Japanese, Chinese, Sanskrit, Arabic, Persian, Tibetan, Indigenous, African, or Latin American poem that meets this entry with equal or greater precision in ALL THREE REGISTERS? If yes — use that one. Only use American or British poets if no other tradition speaks as directly across all registers. NEVER default to Whitman, Frost, or Mary Oliver. FOR SENSORY/NATURE/IMPERMANENCE: Bashō or Issa almost always — their bodily precision is unmatched. FOR LONGING: Hafiz. FOR GRIEF AND THE ORDINARY: Du Fu. FOR DEVOTION: Mirabai or Kabir. FOR BODY/EARTH: Joy Harjo or Léopold Sédar Senghor. FOR LANGUAGE/WRITING: Mahmoud Darwish. FOR CONTEMPORARY ALIENATION: Forugh Farrokhzad or Warsan Shire. FOR IMPERMANENCE/ZEN: Ryōkan. FOR ECOLOGICAL GRIEF: Pablo Neruda or Aimé Césaire. Western canonical (Rilke, Celan, Dickinson, Pessoa) only when genuinely most precise across all three registers.",
   "poem_attribution": "Poet · tradition",
   "poem_source": "Title and date"
 }`;
@@ -706,6 +663,9 @@ function revealSecondTradition(){
 async function reflect(){
   const text=document.getElementById('journal-input').value.trim();
   if(text.length<20){showError('Write a little more before reflecting.');return;}
+  // Track recently used artworks and thinkers to avoid repetition
+  const recentArtworks = JSON.parse(sessionStorage.getItem('limn_recent_artworks') || '[]');
+  const recentThinkers = JSON.parse(sessionStorage.getItem('limn_recent_thinkers') || '[]');
   hideError();
   document.getElementById('input-section').style.display='none';
   document.getElementById('response').style.display='none';
@@ -716,7 +676,7 @@ async function reflect(){
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,messages:[{role:'user',content:buildPrompt(text)}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,messages:[{role:'user',content:buildPrompt(text, recentArtworks, recentThinkers)}]})
     });
     const data=await res.json();
     if(!res.ok) throw new Error(data.error?.message||'API error '+res.status);
@@ -726,6 +686,16 @@ async function reflect(){
     const d=JSON.parse(raw.slice(s,e+1));
     if(!d.resonance) throw new Error('Invalid response format');
     clearInterval(loadingInterval);
+    // Update session history
+    const arts = JSON.parse(sessionStorage.getItem('limn_recent_artworks') || '[]');
+    arts.push(d.artwork1_key, d.artwork2_key);
+    sessionStorage.setItem('limn_recent_artworks', JSON.stringify(arts.slice(-6))); // keep last 6
+    const thinkers = JSON.parse(sessionStorage.getItem('limn_recent_thinkers') || '[]');
+    const t1 = (d.primary_tradition||'').split('·')[0].trim();
+    const t2 = (d.mirror_tradition||'').split('·')[0].trim();
+    if(t1) thinkers.push(t1);
+    if(t2) thinkers.push(t2);
+    sessionStorage.setItem('limn_recent_thinkers', JSON.stringify(thinkers.slice(-6)));
     renderResponse(text,d);
   }catch(err){
     clearInterval(loadingInterval);
@@ -807,7 +777,7 @@ async function renderResponse(entry,d){
     img.onerror = function() {
       if (!this.dataset.retried) {
         this.dataset.retried = '1';
-        const rawUrl = ART_RAW[Object.keys(ART).find(k => ART[k] === art)]?.url;
+        const rawUrl = art.url?.includes('/api/images') ? decodeURIComponent(art.url.split('url=')[1]||'') : null;
         if (rawUrl && rawUrl !== art.url) { this.src = rawUrl; return; }
       }
       this.style.display = 'none';
@@ -959,9 +929,9 @@ function shareCard(){
   win.document.write('<style>');
   win.document.write('* { margin:0; padding:0; box-sizing:border-box; }');
   win.document.write('body { background:#ffffff; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; font-family:Lora,Georgia,serif; }');
-  win.document.write('.card { background:#f0a830; border-radius:22px; padding:3rem 2.6rem; max-width:480px; width:100%; }');
+  win.document.write('.card { background:#f2d078; border-radius:22px; padding:3rem 2.6rem; max-width:480px; width:100%; }');
   win.document.write('.l1 { font-size:0.92rem; color:#2d4260; line-height:1.75; margin-bottom:0.4rem; }');
-  win.document.write('.l2 { font-size:0.92rem; font-weight:500; color:#ffeed0; line-height:1.75; margin-bottom:1.6rem; }');
+  win.document.write('.l2 { font-size:0.92rem; font-weight:500; color:#2d4260; line-height:1.75; margin-bottom:1.6rem; }');
   win.document.write('.cn { font-family:sans-serif; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:#2a1005; font-weight:700; margin-bottom:0.3rem; }');
   win.document.write('.cg { font-size:0.83rem; color:#ffeed0; line-height:1.7; margin-bottom:1.5rem; }');
   win.document.write('.tr { font-family:sans-serif; font-size:0.6rem; letter-spacing:0.16em; text-transform:uppercase; color:#2a1005; font-weight:700; margin-bottom:0.4rem; }');
@@ -1069,14 +1039,20 @@ ${concept ? `<div class="concept-name">${concept}</div><div class="concept-gloss
 }
 
 function openLightbox(art, why) {
+  const lb = document.getElementById('art-lightbox');
   const img = document.getElementById('art-lightbox-img');
-  img.src = art.url || '';
+  img.style.display = 'block';
+  img.src = '';
   img.alt = art.title;
   img.className = 'art-lightbox-img' + (art.orient === 'P' ? ' orient-portrait' : art.orient === 'S' ? ' orient-square' : '');
+  img.onerror = function() { this.style.display = 'none'; };
+  img.onload = function() { this.style.display = 'block'; };
+  // Small delay so lightbox is visible before image loads
+  setTimeout(() => { img.src = art.url || ''; }, 50);
   document.getElementById('art-lightbox-title').textContent = art.title;
   document.getElementById('art-lightbox-artist').textContent = art.artist + ' · ' + art.tradition;
   document.getElementById('art-lightbox-why').textContent = why;
-  document.getElementById('art-lightbox').classList.add('open');
+  lb.classList.add('open');
 }
 function closeLightbox(e) {
   if (e.target === document.getElementById('art-lightbox')) {
@@ -1108,3 +1084,4 @@ function hideError(){document.getElementById('error-msg').style.display='none';}
 </script>
 </body>
 </html>
+
