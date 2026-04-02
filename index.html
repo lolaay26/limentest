@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- v20260401215233 -->
+<!DOCTYPE html><!-- v20260402141941 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -391,11 +391,19 @@ let ART_KEYS = '';
 const ART_LOAD_PROMISE = fetch('/art-library.json')
   .then(r => r.json())
   .then(works => {
-    works.forEach(w => {
+    // Only use AIC, Met, and Getty URLs — Wikimedia fails through proxy
+    const reliable = works.filter(w => {
+      const url = w.url || '';
+      return url.includes('artic.edu') || 
+             url.includes('metmuseum.org') || 
+             url.includes('getty.edu') ||
+             url.includes('collectionapi.metmuseum.org');
+    });
+    reliable.forEach(w => {
       ART[w.key] = { ...w, url: proxyUrl(w.url) };
     });
-    ART_KEYS = works.map(w => `${w.key} (${w.title} · ${w.tradition})`).join(', ');
-    console.log(`Art library loaded: ${works.length} works`);
+    ART_KEYS = reliable.map(w => `${w.key} (${w.title} · ${w.tradition})`).join(', ');
+    console.log(`Art library loaded: ${reliable.length} reliable works (of ${works.length} total)`);
   })
   .catch(err => {
     console.warn('Art library failed to load, using fallback:', err);
@@ -560,6 +568,10 @@ CONCEPT NAME must be identical in opening and concept_name field.
 
 CRITICAL — CONCEPT NAMING: The concept name in Move 2 must be the philosopher's own term, not a mythological figure or literary character. "Camus called this the absurd" not "Sisyphus called this labor." "Kafka called this the trial" not "Josef K. called this." The philosopher names the concept — never a character from their work.
 
+THINKERS vs POETS: The thinkers list includes philosophers, monks, anthropologists, and theorists. Poets (Keats, Whitman, Dickinson, Neruda, Darwish etc.) are NOT thinkers for this app — they appear only in the poem section. Never use a poet as primary_thinker or mirror_thinker. If a poetic sensibility is needed, find the philosopher whose work carries that register.
+
+WATSUJI TRANSLITERATION: When using Watsuji's concepts, use standard English: "climatically" not "klimatically", "fūdo" not "fudo" or "fuudo". Precision in transliteration matters.
+
 TONE: Warm, direct, learned. Not therapeutic. Not new-age. Not academic. Spoken not written. A curious 17-year-old follows it without losing the depth. Never: "invites us to", "reminds us", "journey", "growth", "healing", "transform", "explore", "navigate", "sit with", "hold space", "unpack", "argued", "arguing", "spent decades", "spent their life", "devoted their career". Never soften a philosophical claim into advice or comfort.
 
 OPENING — always two moves, two separate sentences:
@@ -670,6 +682,8 @@ async function reflect(){
   document.getElementById('input-section').style.display='none';
   document.getElementById('response').style.display='none';
   document.getElementById('loading').style.display='block';
+  // Ensure art library is loaded before building prompt
+  await ART_LOAD_PROMISE;
   let tick=0;
   loadingInterval=setInterval(()=>{tick++;document.getElementById('loading-text').textContent=LOADING_TEXTS[tick%LOADING_TEXTS.length]+'…';},2000);
   try{
