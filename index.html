@@ -269,12 +269,12 @@ textarea:focus { border-color:#b8975a; }
 <body style="background:#ffffff">
 <header>
   <div class="logo" onclick="document.getElementById('about-overlay').classList.add('open')" style="cursor:pointer;">LIMN</div>
-  <div class="tagline">Somewhere, in all that humanity has thought about being alive, your moment rhymes.</div>
+  <div class="tagline">Somewhere, in the full breadth of human thought about being alive, your moment rhymes.</div>
 </header>
 <div id="key-gate" class="key-gate">
   <div class="key-gate-inner">
     <div class="key-gate-title">LIMN</div>
-    <div class="key-gate-sub">Somewhere, in all that humanity has thought about being alive, your moment rhymes.</div>
+    <div class="key-gate-sub">Somewhere, in the full breadth of human thought about being alive, your moment rhymes.</div>
     <input type="password" id="key-input" class="key-gate-input" placeholder="Enter your access code" />
     <button class="key-gate-btn" onclick="submitKey()">Enter →</button>
     <div class="key-gate-error" id="key-error">Please enter your access code to continue.</div>
@@ -284,7 +284,7 @@ textarea:focus { border-color:#b8975a; }
 </div>
 <div class="about-overlay" id="about-overlay" onclick="closeAbout(event)">
   <div class="about-box">
-    <p class="about-line1">Somewhere, in all that humanity has thought about being alive, your moment rhymes.</p>
+    <p class="about-line1">Somewhere, in the full breadth of human thought about being alive, your moment rhymes.</p>
     <p class="about-line2">Limn finds where.</p>
     <button class="about-close" onclick="document.getElementById('about-overlay').classList.remove('open')">close</button>
   </div>
@@ -337,9 +337,10 @@ textarea:focus { border-color:#b8975a; }
       <div class="expansion-text" id="expansion-text"></div>
     </div>
     <div id="lower-section" style="display:none;">
-    <div class="divider"><div class="divider-line"></div><div class="divider-star"><svg width="10" height="10" viewBox="0 0 10 10" style="display:inline-block;vertical-align:middle;"><polygon points="5,0 6.5,3.5 10,5 6.5,6.5 5,10 3.5,6.5 0,5 3.5,3.5" fill="#243850"/></svg></div><div class="divider-line"></div></div>
+    <!-- ARTWORK SECTION TEMPORARILY DISABLED — images coming soon -->
+    <!-- <div class="divider"><div class="divider-line"></div><div class="divider-star"><svg width="10" height="10" viewBox="0 0 10 10" style="display:inline-block;vertical-align:middle;"><polygon points="5,0 6.5,3.5 10,5 6.5,6.5 5,10 3.5,6.5 0,5 3.5,3.5" fill="#243850"/></svg></div><div class="divider-line"></div></div>
     <div class="section-label">Two works that resonate</div>
-    <div class="art-grid" id="art-grid"></div>
+    <div class="art-grid" id="art-grid"></div> -->
     <div class="entry-preview" id="entry-preview" style="margin-bottom:1.5rem;padding-top:1rem;border-top:1px solid #e0d8c8;">
       <span class="entry-preview-text" id="entry-preview-text"></span><button class="entry-preview-more" id="entry-preview-toggle" onclick="toggleEntry()"></button>
     </div>
@@ -481,22 +482,16 @@ Journal entry: "${entry}"
 ${recentArtworks.length ? 'RECENTLY SHOWN ARTWORKS — do not repeat these: ' + recentArtworks.join(', ') + '. Choose different works.' : ''}
 ${recentThinkers.length ? 'RECENTLY USED THINKERS — avoid repeating these unless genuinely the most precise match: ' + recentThinkers.join(', ') : ''}
 
-YOUR CORE TASK — THREE REGISTERS. THIS IS MANDATORY, NOT OPTIONAL.
-Before selecting ANY thinker, artwork, or poem, you must read the entry on all three registers. This is not a suggestion. Do not skip this step. The three-register reading IS what makes Limn different from every other app.
+YOUR CORE TASK — THREE REGISTERS (MANDATORY):
+Read the entry on all three registers before selecting anything.
 
-REGISTER 1 — EMOTIONAL/AFFECTIVE:
-What is the feeling tone beneath the stated emotion? Not the surface label but the specific texture — the exhaustion of sustained effort, the vertigo of not-landing, the ache of unreciprocated attention, the strange flatness after wanting something for too long. This register is real and important. But do NOT stop here — the next two registers are where the surprising matches live.
+REGISTER 1 — EMOTIONAL/AFFECTIVE: The feeling tone beneath the surface label — specific texture, not category.
+REGISTER 2 — BODILY/SOMATIC: The body implicit in the entry — gesture, posture, threshold. Often the most precise entry point.
+REGISTER 3 — ASSOCIATIVE/IMAGISTIC: What this entry rhymes with beyond its surface — the unexpected philosophical territory it opens.
 
-REGISTER 2 — BODILY/SOMATIC:
-Is there a body in this entry, even implicitly? A gesture, a posture, a threshold, a knowing that arrived before language. Even entries that seem purely emotional often carry a bodily shape — find it. The body may be the most precise entry point. This register is often the one the person themselves has not noticed.
-
-REGISTER 3 — ASSOCIATIVE/IMAGISTIC:
-What does this entry rhyme with beyond its surface? What image, philosophical territory, visual quality, or unexpected shape does it open? This register produces the most surprising and precise matches — the ones the person could not have anticipated. Read the entry for what it resembles, not just what it says.
-
-THE THREE-REGISTER READING GOVERNS ALL THREE OUTPUTS:
-— THINKER: Which philosopher speaks to the register(s) with most precision? Not the first thinker that surfaces — the one who speaks to the specific texture.
-— ARTWORK: Which work carries the same felt quality? Not the subject matter — the bodily and associative register. A painting of rain is not always about rain. Find the work whose visual texture rhymes with the entry's felt texture.
-— POEM: Which poem arrives from the same register? Not thematic match — felt match. The bodily quality, the associative territory, the specific texture.
+THE THREE-REGISTER READING GOVERNS ALL OUTPUTS:
+— THINKER: The one who speaks to the specific texture, not the first that surfaces.
+— POEM: Felt match across all three registers, not thematic match.
 
 METACOGNITIVE CHECK — mandatory before committing to any choice:
 Am I reaching for this thinker/artwork/poem because they genuinely speak to the specific texture of this entry — or because they are statistically associated with this type of entry in my training? Striving entries pull Han. Time entries pull Bergson. Isolation entries pull Nighthawks. Nature entries pull the Great Wave or Hokusai. If you notice yourself reaching for the categorically obvious match — STOP. Go deeper into Register 2 and Register 3. The right match is almost never the first one that surfaces.
@@ -568,7 +563,7 @@ CONCEPT NAME must be identical in opening and concept_name field.
 
 CRITICAL — CONCEPT NAMING: The concept name in Move 2 must be the philosopher's own term, not a mythological figure or literary character. "Camus called this the absurd" not "Sisyphus called this labor." "Kafka called this the trial" not "Josef K. called this." The philosopher names the concept — never a character from their work.
 
-THINKERS vs POETS: The thinkers list includes philosophers, monks, anthropologists, and theorists. Poets (Keats, Whitman, Dickinson, Neruda, Darwish etc.) are NOT thinkers for this app — they appear only in the poem section. Never use a poet as primary_thinker or mirror_thinker. If a poetic sensibility is needed, find the philosopher whose work carries that register.
+THINKERS vs POETS: Poets (Keats, Whitman, Dickinson, Neruda, Darwish etc.) must NEVER appear as primary_thinker or mirror_thinker. Philosophers only.
 
 WATSUJI TRANSLITERATION: When using Watsuji's concepts, use standard English: "climatically" not "klimatically", "fūdo" not "fudo" or "fuudo". Precision in transliteration matters.
 
@@ -601,12 +596,7 @@ BRIDGE (mirror_relationship) — one sentence only. 25 words maximum. Names both
 
 AND FURTHER — EXACTLY 2 sentences. Both thinkers named. Short. Spoken. Level of the idea only. Does not address the person.
 
-ARTWORKS — choose two from the library. Apply the THREE-REGISTER READING to artwork selection — do not match by subject matter, match by felt quality.
-REGISTER 1 (emotional/affective): What mood does the entry carry? Find a work that holds the same atmosphere.
-REGISTER 2 (bodily/somatic): What is the physical quality — weight, stillness, motion, threshold, dissolution? Find a work with that quality in its visual texture.
-REGISTER 3 (associative/imagistic): What does the entry visually rhyme with? Not what it depicts — what visual territory it opens unexpectedly.
-The library has 744 works spanning Japanese, Chinese, Korean, Persian, Mughal, Ottoman, Tibetan, Indian, African, pre-Columbian, Egyptian, Greek, Medieval, and European traditions — use this breadth. Strong preference for one Western and one non-Western work. NEVER default to nighthawks for loneliness, greatWave for striving/impermanence, or casparDavid (Wanderer) as default — these are powerful but must not dominate. For ecological/sensory/bodily entries reach into Japanese, Chinese, Islamic, Indian, African traditions first. Match quality of experience, not subject matter
-${ART_KEYS}
+ARTWORKS — choose two keys from the library. One Western, one non-Western. Match felt quality not subject matter. Avoid nighthawks, greatWave, casparDavid as defaults
 
 JSON only, no markdown:
 {
@@ -626,7 +616,7 @@ JSON only, no markdown:
   "artwork1_why": "One sentence — quality of experience this work shares with the entry",
   "artwork2_key": "Different key, different tradition",
   "artwork2_why": "One sentence — quality of experience this work shares with the entry",
-  "poem_text": "3-5 lines — real verified poem. Apply the THREE-REGISTER READING: which poem carries the same bodily quality, the same associative territory, the same felt texture — not just the same theme. TRADITION DECISION RULE: Before choosing any poem, ask — is there a Japanese, Chinese, Sanskrit, Arabic, Persian, Tibetan, Indigenous, African, or Latin American poem that meets this entry with equal or greater precision in ALL THREE REGISTERS? If yes — use that one. Only use American or British poets if no other tradition speaks as directly across all registers. NEVER default to Whitman, Frost, or Mary Oliver. FOR SENSORY/NATURE/IMPERMANENCE: Bashō or Issa almost always — their bodily precision is unmatched. FOR LONGING: Hafiz. FOR GRIEF AND THE ORDINARY: Du Fu. FOR DEVOTION: Mirabai or Kabir. FOR BODY/EARTH: Joy Harjo or Léopold Sédar Senghor. FOR LANGUAGE/WRITING: Mahmoud Darwish. FOR CONTEMPORARY ALIENATION: Forugh Farrokhzad or Warsan Shire. FOR IMPERMANENCE/ZEN: Ryōkan. FOR ECOLOGICAL GRIEF: Pablo Neruda or Aimé Césaire. Western canonical (Rilke, Celan, Dickinson, Pessoa) only when genuinely most precise across all three registers.",
+  "poem_text": "3-5 lines — real verified poem. TRADITION RULE: Prefer Japanese, Chinese, Sanskrit, Arabic, Persian, Tibetan, Indigenous, African, Latin American over Western. NEVER default to Whitman, Frost, Mary Oliver. FOR NATURE/IMPERMANENCE: Bashō or Issa. FOR LONGING: Hafiz. FOR GRIEF: Du Fu. FOR DEVOTION: Mirabai or Kabir. FOR BODY/EARTH: Joy Harjo or Senghor. FOR ALIENATION: Farrokhzad or Warsan Shire. FOR ZEN: Ryōkan. Western (Rilke, Celan, Dickinson, Pessoa) only when most precise.",
   "poem_attribution": "Poet · tradition",
   "poem_source": "Title and date"
 }`;
@@ -781,7 +771,7 @@ async function renderResponse(entry,d){
   else{document.getElementById('expansion-block').style.display='none'; document.getElementById('expansion-block').setAttribute('data-has-content','0');}
 
   const grid=document.getElementById('art-grid');
-  grid.innerHTML='';
+  if(grid) grid.innerHTML='';
 
   function renderArtCard(card, art, why) {
     const img = document.createElement('img');
@@ -820,28 +810,23 @@ async function renderResponse(entry,d){
     card.appendChild(meta);
   }
 
-  // Wait for ART library to load before rendering images
-  await ART_LOAD_PROMISE;
-  console.log('Rendering art — ART keys available:', Object.keys(ART).slice(0,5).join(', '));
-  console.log('AI chose:', d.artwork1_key, d.artwork2_key);
-
-  const artKeys = Object.keys(ART);
-  const card1 = document.createElement('div'); card1.className = 'art-card';
-  const card2 = document.createElement('div'); card2.className = 'art-card';
-  grid.appendChild(card1);
-  grid.appendChild(card2);
-
-  [
-    { key: d.artwork1_key, why: d.artwork1_why, card: card1, fallbackIdx: 0 },
-    { key: d.artwork2_key, why: d.artwork2_why, card: card2, fallbackIdx: 3 },
-  ].forEach(({ key, why, card, fallbackIdx }) => {
-    const art = ART[key] || ART[artKeys[fallbackIdx % artKeys.length]];
-    if (art) {
-      renderArtCard(card, art, why);
-    } else {
-      renderArtPlaceholder(card, key || 'Artwork', '', why);
-    }
-  });
+  // Artwork section disabled — skip rendering
+  if (grid) {
+    await ART_LOAD_PROMISE;
+    const artKeys = Object.keys(ART);
+    const card1 = document.createElement('div'); card1.className = 'art-card';
+    const card2 = document.createElement('div'); card2.className = 'art-card';
+    grid.appendChild(card1);
+    grid.appendChild(card2);
+    [
+      { key: d.artwork1_key, why: d.artwork1_why, card: card1, fallbackIdx: 0 },
+      { key: d.artwork2_key, why: d.artwork2_why, card: card2, fallbackIdx: 3 },
+    ].forEach(({ key, why, card, fallbackIdx }) => {
+      const art = ART[key] || ART[artKeys[fallbackIdx % artKeys.length]];
+      if (art) { renderArtCard(card, art, why); }
+      else { renderArtPlaceholder(card, key || 'Artwork', '', why); }
+    });
+  }
 
   document.getElementById('poem-text').textContent=d.poem_text;
   document.getElementById('poem-attr').textContent=d.poem_attribution;
@@ -947,11 +932,11 @@ function shareCard(){
   win.document.write('.l1 { font-size:0.92rem; color:#2d4260; line-height:1.75; margin-bottom:0.4rem; }');
   win.document.write('.l2 { font-size:0.92rem; font-weight:500; color:#2d4260; line-height:1.75; margin-bottom:1.6rem; }');
   win.document.write('.cn { font-family:sans-serif; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:#2a1005; font-weight:700; margin-bottom:0.3rem; }');
-  win.document.write('.cg { font-size:0.83rem; color:#ffeed0; line-height:1.7; margin-bottom:1.5rem; }');
+  win.document.write('.cg { font-size:0.83rem; color:#2d4260; line-height:1.7; margin-bottom:1.5rem; }');
   win.document.write('.tr { font-family:sans-serif; font-size:0.6rem; letter-spacing:0.16em; text-transform:uppercase; color:#2a1005; font-weight:700; margin-bottom:0.4rem; }');
   win.document.write('.pq { font-size:0.8rem; font-style:italic; color:#2d4260; line-height:1.75; opacity:0.85; margin-bottom:0.6rem; }');
   win.document.write('.pw { font-size:0.83rem; color:#2d4260; line-height:1.75; margin-bottom:0.2rem; }');
-  win.document.write('.br { font-size:0.85rem; color:#ffeed0; line-height:1.75; border-left:2px solid rgba(255,238,208,0.7); padding-left:0.85rem; margin:0; opacity:0.95; }');
+  win.document.write('.br { font-size:0.85rem; color:#9a5c20; font-style:italic; line-height:1.75; border-left:2px solid #9a5c20; padding-left:0.85rem; margin:0; }');
   win.document.write('.dv { display:flex; align-items:center; gap:0.6rem; margin:1.4rem 0; }');
   win.document.write('.dl { flex:1; height:0.5px; background:#2a1005; opacity:0.2; }');
   win.document.write('.pm { font-size:0.85rem; font-style:italic; color:#f0e8d8; line-height:1.9; white-space:pre-line; }');
